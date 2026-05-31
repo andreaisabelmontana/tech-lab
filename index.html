@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4338CA" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>tech-lab · low-code, no-code &amp; generative AI, made interactive</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body, { delimiters: [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}], ignoredTags: ['option','script','textarea'] })"></script>
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <span class="dot"></span><strong>tech-lab</strong>
+        <span class="sub">adoption · networks · no-code · automation · generative AI</span>
+      </div>
+      <nav>
+        <a href="#scurve">adoption</a>
+        <a href="#network">network effects</a>
+        <a href="#nocode">no-code</a>
+        <a href="#flow">automation</a>
+        <a href="#rpa">RPA ROI</a>
+        <a href="#token">tokenizer</a>
+        <a href="#attn">attention</a>
+        <a href="#diffusion">diffusion</a>
+        <a href="#bot">chatbot</a>
+        <a href="#db">database</a>
+        <a href="#sdg">impact</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 1. ADOPTION S-CURVE — Session 1: trends & diffusion ----------- -->
+      <section class="demo" id="scurve">
+        <h2>1. Technology adoption — the S-curve</h2>
+        <p class="cap">New technologies spread by word of mouth: adoption $\frac{dA}{dt}=pq$-style contagion produces an
+          S-shaped curve. Tune the innovation rate $p$ and imitation rate $q$ of the Bass diffusion model and watch
+          where Rogers' adopter groups (innovators → laggards) fall.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-scurve" width="600" height="320"></canvas></div>
+          <div class="ctrls">
+            <label>innovation $p$ <span class="mono" id="sc-pv">0.03</span>
+              <input id="sc-p" type="range" min="0.005" max="0.08" step="0.005" value="0.03"/></label>
+            <label>imitation $q$ <span class="mono" id="sc-qv">0.38</span>
+              <input id="sc-q" type="range" min="0.1" max="0.7" step="0.01" value="0.38"/></label>
+            <label>market size $M$ <span class="mono" id="sc-mv">100</span>
+              <input id="sc-m" type="range" min="20" max="200" step="10" value="100"/></label>
+            <div class="readout"><span>peak adoption at</span><strong id="sc-peak" class="mono">—</strong></div>
+            <div class="readout"><span>50% penetration</span><strong id="sc-half" class="mono">—</strong></div>
+            <div class="readout"><span>adopters by end</span><strong id="sc-tot" class="mono big">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. NETWORK EFFECTS — value of platforms --------------------- -->
+      <section class="demo" id="network">
+        <h2>2. Network effects — Metcalfe &amp; beyond</h2>
+        <p class="cap">A platform's value grows with its users. Metcalfe's law says value $\propto n^2$; Sarnoff
+          (broadcast) is linear $n$; Reed (group-forming) is exponential $2^n$. Drag the slider to add users and
+          compare why "winner-take-all" dynamics emerge.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-network" width="600" height="320"></canvas></div>
+          <div class="ctrls">
+            <label>users $n$ <span class="mono" id="nw-nv">8</span>
+              <input id="nw-n" type="range" min="2" max="16" step="1" value="8"/></label>
+            <label>value model
+              <select id="nw-law">
+                <option value="metcalfe" selected>Metcalfe — n(n−1)/2</option>
+                <option value="sarnoff">Sarnoff — n</option>
+                <option value="reed">Reed — 2ⁿ−n−1</option>
+              </select>
+            </label>
+            <div class="readout"><span>connections / value</span><strong id="nw-val" class="mono big">—</strong></div>
+            <div class="readout"><span>value per user</span><strong id="nw-per" class="mono">—</strong></div>
+            <div class="readout"><span>marginal gain (+1 user)</span><strong id="nw-marg" class="mono">—</strong></div>
+            <p class="hint">Each new user adds value to everyone already on the network.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. NO-CODE BUILDER — Sessions 2-5 ---------------------------- -->
+      <section class="demo" id="nocode">
+        <h2>3. No-code app builder — visual logic</h2>
+        <p class="cap">No-code tools (Bubble, Adalo, Glide) let you assemble apps from blocks instead of writing code.
+          Click to drop UI &amp; logic blocks onto the canvas; the platform compiles your stack into a working spec.
+          Watch the "lines of code saved" estimate grow.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-nocode" width="600" height="340"></canvas></div>
+          <div class="ctrls">
+            <label>add block
+              <select id="nc-block">
+                <option value="input">Input field</option>
+                <option value="button">Button</option>
+                <option value="list">Data list</option>
+                <option value="auth">User auth</option>
+                <option value="db">Database</option>
+                <option value="api">API call</option>
+              </select>
+            </label>
+            <button id="nc-add" class="btn">drop block</button>
+            <div class="readout"><span>blocks placed</span><strong id="nc-count" class="mono">0</strong></div>
+            <div class="readout"><span>≈ code saved</span><strong id="nc-loc" class="mono big">0</strong></div>
+            <div class="readout"><span>build status</span><strong id="nc-status" class="mono">empty</strong></div>
+            <button id="nc-clear" class="btn">clear canvas</button>
+            <p class="hint">Click a block on the canvas to remove it.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. AUTOMATION WORKFLOW — Sessions 8 (Zapier/Make) ------------ -->
+      <section class="demo" id="flow">
+        <h2>4. Automation — trigger → action pipelines</h2>
+        <p class="cap">Tools like Zapier and Make connect apps: a <em>trigger</em> fires, data flows through
+          <em>filters</em> and <em>actions</em>. Build a pipeline, set how many events arrive per day, and see the
+          time saved versus doing each step by hand.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-flow" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>add step
+              <select id="fl-step">
+                <option value="trigger">⚡ Trigger (new email)</option>
+                <option value="filter">⛃ Filter (only if…)</option>
+                <option value="action">▸ Action (create row)</option>
+                <option value="notify">✉ Notify (send Slack)</option>
+              </select>
+            </label>
+            <button id="fl-add" class="btn">add step</button>
+            <label>events / day <span class="mono" id="fl-ev">40</span>
+              <input id="fl-evt" type="range" min="1" max="200" step="1" value="40"/></label>
+            <label>manual minutes / event <span class="mono" id="fl-mn">3</span>
+              <input id="fl-min" type="range" min="1" max="20" step="1" value="3"/></label>
+            <div class="readout"><span>pipeline valid</span><strong id="fl-valid" class="mono">—</strong></div>
+            <div class="readout"><span>hours saved / month</span><strong id="fl-saved" class="mono big">—</strong></div>
+            <button id="fl-clear" class="btn">clear</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. RPA ROI — Session 8 (UiPath) ------------------------------ -->
+      <section class="demo" id="rpa">
+        <h2>5. RPA &amp; automation ROI</h2>
+        <p class="cap">Robotic Process Automation replaces repetitive human tasks with software bots. A task is a good
+          RPA candidate when it is high-volume, rule-based and stable. Score a task and see the payback period for
+          a bot that costs a fixed amount to build.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-rpa" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>volume — runs / month <span class="mono" id="rp-vv">500</span>
+              <input id="rp-v" type="range" min="10" max="5000" step="10" value="500"/></label>
+            <label>minutes per run (human) <span class="mono" id="rp-tv">6</span>
+              <input id="rp-t" type="range" min="1" max="60" step="1" value="6"/></label>
+            <label>hourly cost € <span class="mono" id="rp-cv">25</span>
+              <input id="rp-c" type="range" min="10" max="80" step="1" value="25"/></label>
+            <label>bot build cost € <span class="mono" id="rp-bv">4000</span>
+              <input id="rp-b" type="range" min="500" max="20000" step="500" value="4000"/></label>
+            <div class="readout"><span>monthly saving</span><strong id="rp-save" class="mono">—</strong></div>
+            <div class="readout"><span>payback</span><strong id="rp-pay" class="mono big">—</strong></div>
+            <div class="readout"><span>verdict</span><strong id="rp-verd" class="mono">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. TOKENIZER — Session 13 generative AI ---------------------- -->
+      <section class="demo" id="token">
+        <h2>6. Tokenizer — how an LLM reads text</h2>
+        <p class="cap">A language model never sees words — it sees <em>tokens</em>: sub-word chunks mapped to integer
+          IDs. Type a sentence and watch a (simplified) byte-pair-style tokenizer split it. Note how common words are
+          one token and rare ones fragment.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-token" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>text
+              <input id="tk-in" type="text" value="Generative AI is unbelievably transformative." spellcheck="false"/></label>
+            <div class="readout"><span>characters</span><strong id="tk-chars" class="mono">—</strong></div>
+            <div class="readout"><span>tokens</span><strong id="tk-toks" class="mono big">—</strong></div>
+            <div class="readout"><span>chars / token</span><strong id="tk-ratio" class="mono">—</strong></div>
+            <div class="readout"><span>≈ cost @ $3/1M tok</span><strong id="tk-cost" class="mono">—</strong></div>
+            <p class="hint">Colours mark token boundaries. Real tokenizers learn merges from data.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. ATTENTION — Session 13 ------------------------------------ -->
+      <section class="demo" id="attn">
+        <h2>7. Attention &amp; next-token prediction</h2>
+        <p class="cap">A transformer predicts the next token by deciding which earlier tokens to "attend" to. Pick a
+          context and the query token; the bars show a softmax over attention scores, and the model picks the most
+          likely continuation. This is a hand-built toy of the mechanism behind ChatGPT.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-attn" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>context
+              <select id="at-ctx">
+                <option value="the cat sat on the" selected>the cat sat on the …</option>
+                <option value="machine learning models need">machine learning models need …</option>
+                <option value="no code tools let you">no code tools let you …</option>
+              </select>
+            </label>
+            <label>temperature <span class="mono" id="at-tv">0.7</span>
+              <input id="at-t" type="range" min="0.1" max="2" step="0.1" value="0.7"/></label>
+            <div class="readout"><span>predicted next</span><strong id="at-next" class="mono big">—</strong></div>
+            <div class="readout"><span>confidence</span><strong id="at-conf" class="mono">—</strong></div>
+            <button id="at-sample" class="btn">sample again</button>
+            <p class="hint">Lower temperature = greedier; higher = more random.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. DIFFUSION — Session 13 image generation ------------------- -->
+      <section class="demo" id="diffusion">
+        <h2>8. Diffusion — generating an image from noise</h2>
+        <p class="cap">Image models (Midjourney, Stable Diffusion) start from pure noise and <em>denoise</em> step by
+          step toward a target guided by a prompt. Press play to watch random pixels resolve into a pattern; each
+          step removes a slice of noise.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-diffusion" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>total steps <span class="mono" id="df-sv">30</span>
+              <input id="df-s" type="range" min="5" max="60" step="1" value="30"/></label>
+            <label>guidance (prompt)
+              <select id="df-target">
+                <option value="circle" selected>● sun / circle</option>
+                <option value="rings">◎ rings</option>
+                <option value="grad">▤ gradient sky</option>
+              </select>
+            </label>
+            <div class="readout"><span>step</span><strong id="df-step" class="mono">0 / 30</strong></div>
+            <div class="readout"><span>noise remaining</span><strong id="df-noise" class="mono big">100%</strong></div>
+            <button id="df-play" class="btn">play</button>
+            <button id="df-reset" class="btn">reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. CHATBOT — Session 12 -------------------------------------- -->
+      <section class="demo" id="bot">
+        <h2>9. Chatbot — intent routing</h2>
+        <p class="cap">No-code chatbots (ManyChat, Tars) route a user message to an <em>intent</em> by matching
+          keywords, then fire the matching reply. Type a customer message and watch it score against each intent and
+          fall through to a fallback if nothing matches.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-bot" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>user message
+              <input id="bt-in" type="text" value="hi, what are your opening hours?" spellcheck="false"/></label>
+            <div class="readout"><span>matched intent</span><strong id="bt-intent" class="mono big">—</strong></div>
+            <div class="readout"><span>confidence</span><strong id="bt-conf" class="mono">—</strong></div>
+            <div class="readout"><span>bot reply</span><strong id="bt-reply" class="mono">—</strong></div>
+            <p class="hint">Intents: greeting · hours · pricing · support · goodbye. Else → fallback.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. DATABASE — Sessions 9-11 (Airtable) ---------------------- -->
+      <section class="demo" id="db">
+        <h2>10. No-code database — filter &amp; query</h2>
+        <p class="cap">Airtable and Google Sheets store data as records in a table. Build a filter the way you would in
+          a no-code view: choose a field, an operator and a value, and watch the matching rows highlight — the same
+          logic a <span class="mono">WHERE</span> clause runs under the hood.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-db" width="600" height="320"></canvas></div>
+          <div class="ctrls">
+            <label>field
+              <select id="db-field">
+                <option value="plan">plan</option>
+                <option value="mrr" selected>MRR (€)</option>
+                <option value="active">active</option>
+              </select>
+            </label>
+            <label>operator
+              <select id="db-op">
+                <option value="gt" selected>&gt;</option>
+                <option value="lt">&lt;</option>
+                <option value="eq">=</option>
+              </select>
+            </label>
+            <label>value <span class="mono" id="db-vv">50</span>
+              <input id="db-v" type="range" min="0" max="200" step="10" value="50"/></label>
+            <div class="readout"><span>rows matched</span><strong id="db-match" class="mono big">—</strong></div>
+            <div class="readout"><span>sum MRR (matched)</span><strong id="db-sum" class="mono">—</strong></div>
+            <p class="hint" id="db-hint"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. SDG IMPACT — Learning objectives / use case -------------- -->
+      <section class="demo" id="sdg">
+        <h2>11. Technology with impact — prioritisation matrix</h2>
+        <p class="cap">The course asks: which technology should we apply to a social problem? Score candidate
+          solutions on <em>impact</em> (how much good) and <em>feasibility</em> (how buildable with today's no-code /
+          AI tools). The matrix plots each on the classic 2×2; the top-right quadrant is "do this first".</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-sdg" width="600" height="340"></canvas></div>
+          <div class="ctrls">
+            <label>solution
+              <select id="sd-sel">
+                <option value="0" selected>AI crop-disease scanner</option>
+                <option value="1">No-code disaster-relief forms</option>
+                <option value="2">Chatbot mental-health triage</option>
+                <option value="3">RPA for NGO admin</option>
+                <option value="4">Generative AI tutoring</option>
+              </select>
+            </label>
+            <label>impact <span class="mono" id="sd-iv">8</span>
+              <input id="sd-i" type="range" min="1" max="10" step="1" value="8"/></label>
+            <label>feasibility <span class="mono" id="sd-fv">6</span>
+              <input id="sd-f" type="range" min="1" max="10" step="1" value="6"/></label>
+            <div class="readout"><span>quadrant</span><strong id="sd-quad" class="mono big">—</strong></div>
+            <div class="readout"><span>priority score</span><strong id="sd-score" class="mono">—</strong></div>
+            <p class="hint">Each solution remembers its own scores — switch to compare.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>tech-lab — Andrea Montana · IE BCSAI</span>
+      <span class="more">
+        <a href="https://github.com/andreaisabelmontana/discrete-math-lab" target="_blank">discrete-math-lab</a>
+        <a href="https://github.com/andreaisabelmontana/prob-stats-lab" target="_blank">prob-stats-lab</a>
+        <a href="https://github.com/andreaisabelmontana/modeling-lab" target="_blank">modeling-lab</a>
+        <a href="https://github.com/andreaisabelmontana/cloud-lab" target="_blank">cloud-lab</a>
+        <a href="https://github.com/andreaisabelmontana/tech-lab" target="_blank">source</a>
+      </span>
+    </footer>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
