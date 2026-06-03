@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4338CA" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>tech-lab · worked example — automate a small-business workflow with no-code + GenAI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body, { delimiters: [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}], ignoredTags: ['option','script','textarea','pre','code'] })"></script>
+
+    <link rel="stylesheet" href="./style.css" />
+
+    <style>
+      /* project.html — reuses every :root token from style.css; only adds
+         layout helpers for the worked example (prose, diagram, code, tables).
+         No new palette. */
+      .lede { color: var(--ink-soft); font-size: 0.92rem; max-width: 72ch; margin: 0 0 0.85rem; }
+      .demo p.body { color: var(--ink-soft); font-size: 0.88rem; max-width: 74ch; margin: 0 0 0.7rem; }
+      .demo p.body:last-child { margin-bottom: 0; }
+      .demo h3 {
+        font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em;
+        color: var(--muted); margin: 1.1rem 0 0.5rem; font-weight: 700;
+      }
+      .demo h3:first-of-type { margin-top: 0.4rem; }
+
+      /* meta grid — same look as course.html */
+      .meta-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.6rem; margin-top: 0.5rem;
+      }
+      .meta-cell {
+        border: 1px solid var(--rule); border-radius: 6px;
+        padding: 0.55rem 0.7rem; background: var(--bg);
+      }
+      .meta-cell .k { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      .meta-cell .v { color: var(--ink); font-weight: 700; font-size: 0.9rem; margin-top: 0.15rem; }
+      .meta-cell .v.mono { font-family: var(--font-mono); }
+
+      /* objective / bullet lists */
+      ul.obj { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+      ul.obj li { position: relative; padding-left: 1.4rem; color: var(--ink-soft); font-size: 0.86rem; }
+      ul.obj li::before {
+        content: ''; position: absolute; left: 0; top: 0.45em;
+        width: 8px; height: 8px; border-radius: 2px; background: var(--accent);
+      }
+      ul.obj li strong { color: var(--ink); font-weight: 600; }
+
+      .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+      @media (max-width: 760px) { .twocol { grid-template-columns: 1fr; gap: 1rem; } }
+
+      /* tags / tool chips — same as course.html */
+      .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.6rem; }
+      .tag {
+        font-size: 0.7rem; font-family: var(--font-mono); font-weight: 500;
+        color: var(--ink-soft); border: 1px solid var(--rule-h); border-radius: 4px;
+        padding: 0.1em 0.45em; background: var(--bg);
+      }
+      .tag.demo-link { color: var(--accent); border-color: var(--accent); }
+      .tag.tool::before { content: '🛠 '; }
+      .tag.sess::before { content: '▸ '; }
+
+      .keyidea {
+        margin: 0.7rem 0 0; padding: 0.45rem 0.6rem;
+        border-left: 3px solid var(--accent); background: var(--accent-soft);
+        border-radius: 0 4px 4px 0; font-size: 0.82rem; color: var(--ink-soft);
+      }
+      .keyidea b { color: var(--ink); font-weight: 700; }
+
+      .note {
+        margin: 0.7rem 0 0; padding: 0.45rem 0.6rem;
+        border-left: 3px solid var(--warn); background: rgba(245,158,11,0.08);
+        border-radius: 0 4px 4px 0; font-size: 0.82rem; color: var(--ink-soft);
+      }
+      .note b { color: var(--ink); font-weight: 700; }
+
+      /* ---- ASCII workflow diagram ---- */
+      .diagram {
+        font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.5;
+        color: var(--ink-soft); background: var(--bg);
+        border: 1px solid var(--rule); border-radius: 8px;
+        padding: 0.9rem 1rem; margin: 0.5rem 0 0; overflow-x: auto;
+        white-space: pre;
+      }
+      .diagram b { color: var(--accent); font-weight: 600; }
+
+      /* ---- step cards ---- */
+      .steps { counter-reset: step; display: flex; flex-direction: column; gap: 0.7rem; margin-top: 0.5rem; }
+      .step {
+        position: relative; padding: 0.65rem 0.8rem 0.7rem 2.6rem;
+        border: 1px solid var(--rule); border-radius: 8px; background: var(--bg);
+      }
+      .step::before {
+        counter-increment: step; content: counter(step);
+        position: absolute; left: 0.7rem; top: 0.65rem;
+        width: 1.5rem; height: 1.5rem; border-radius: 999px;
+        background: var(--paper); border: 2px solid var(--accent);
+        color: var(--accent); font-family: var(--font-mono); font-weight: 600; font-size: 0.74rem;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .step h4 { font-size: 0.88rem; font-weight: 700; color: var(--ink); margin: 0.1rem 0 0.25rem; }
+      .step p { font-size: 0.83rem; color: var(--ink-soft); margin: 0; }
+      .step .mono { font-family: var(--font-mono); }
+
+      /* ---- code blocks (scoped) ---- */
+      pre.code {
+        background: #1B1B22; color: #E7E7EC;
+        border: 1px solid var(--rule-h); border-radius: 8px;
+        padding: 0.85rem 1rem; margin: 0.5rem 0 0; overflow-x: auto;
+        font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55;
+      }
+      pre.code code { font-family: inherit; }
+      .tok-c { color: #8A8A92; font-style: italic; }   /* comment  */
+      .tok-k { color: #C4B5FD; }                        /* keyword  */
+      .tok-s { color: #86EFAC; }                        /* string   */
+      .tok-f { color: #93C5FD; }                        /* function */
+      .tok-n { color: #FCD34D; }                        /* number   */
+      .codecap { color: var(--muted); font-size: 0.76rem; margin: 0.35rem 0 0; }
+
+      /* inline code in prose */
+      code.inl {
+        font-family: var(--font-mono); font-size: 0.84em;
+        background: var(--accent-soft); color: var(--accent);
+        padding: 0.05em 0.35em; border-radius: 4px;
+      }
+
+      /* prompt block */
+      .prompt {
+        font-family: var(--font-mono); font-size: 0.79rem; line-height: 1.5;
+        color: var(--ink); background: var(--paper);
+        border: 1px dashed var(--accent); border-radius: 8px;
+        padding: 0.8rem 0.95rem; margin: 0.5rem 0 0; white-space: pre-wrap;
+      }
+      .prompt .ph { color: var(--accent); font-weight: 600; }
+
+      /* ---- tables (ROI / mapping) ---- */
+      table.tbl { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.83rem; }
+      table.tbl th, table.tbl td {
+        text-align: left; padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--rule); vertical-align: top;
+      }
+      table.tbl thead th {
+        color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em;
+        font-weight: 700; border-bottom: 1px solid var(--rule-h);
+      }
+      table.tbl td.num, table.tbl th.num { text-align: right; font-family: var(--font-mono); }
+      table.tbl tr.total td { border-top: 1px solid var(--rule-h); border-bottom: 0; font-weight: 700; color: var(--ink); }
+      table.tbl tr.total td.num { color: var(--accent); }
+      table.tbl td .mono { font-family: var(--font-mono); }
+      .tbl-wrap { overflow-x: auto; }
+
+      /* big readout strip */
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin-top: 0.6rem; }
+      .kpi { border: 1px solid var(--rule); border-radius: 8px; padding: 0.6rem 0.75rem; background: var(--bg); }
+      .kpi .kv { font-family: var(--font-mono); font-weight: 700; font-size: 1.2rem; color: var(--accent); }
+      .kpi .kl { color: var(--muted); font-size: 0.74rem; margin-top: 0.1rem; }
+
+      /* outcome mapping rows reuse table */
+      .pill {
+        display: inline-block; font-size: 0.7rem; font-family: var(--font-mono); font-weight: 600;
+        color: var(--accent); background: var(--accent-soft); padding: 0.1em 0.5em; border-radius: 4px;
+      }
+
+      /* references */
+      .biblio { list-style: none; margin: 0.3rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+      .biblio li { font-size: 0.84rem; color: var(--ink-soft); padding-left: 1.1rem; position: relative; }
+      .biblio li::before { content: ''; position: absolute; left: 0; top: 0.45em; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
+      .biblio .title { color: var(--ink); font-weight: 600; }
+      .biblio .meta { color: var(--muted); font-size: 0.78rem; }
+
+      .toc { display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; margin-top: 0.6rem; }
+      .toc a { font-size: 0.78rem; font-family: var(--font-mono); color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <span class="dot"></span><strong>tech-lab</strong>
+        <span class="sub">worked example · no-code + generative AI in practice</span>
+      </div>
+      <nav>
+        <a href="./index.html">← interactive demos</a>
+        <a href="./course.html">course outline</a>
+        <a href="#overview">overview</a>
+        <a href="#problem">workflow</a>
+        <a href="#build">build</a>
+        <a href="#genai">GenAI step</a>
+        <a href="#impact">impact</a>
+        <a href="#risks">risks</a>
+        <a href="#outcomes">outcomes</a>
+        <a href="#extensions">extensions</a>
+        <a href="#refs">references</a>
+        <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 1. OVERVIEW ------------------------------------------------------ -->
+      <section class="demo" id="overview">
+        <h2>Worked example — automate a small-business inbound-lead pipeline</h2>
+        <p class="cap">One end-to-end project that stitches the whole course together: a no-code form captures a lead,
+          a Make-style automation routes it, a generative-AI step drafts a personalised reply, and an Airtable base logs
+          everything — finished with an honest ROI and build-vs-buy analysis.</p>
+
+        <p class="body"><strong>The scenario.</strong> "Verde Jardín" is a two-person urban-gardening studio. Enquiries
+          arrive through a website contact form, Instagram DMs and email. A founder spends the first hour of every
+          morning triaging them and hand-writing the same kind of first reply — a warm acknowledgement, a rough quote
+          band, and a link to book a site visit. Replies are slow and inconsistent, and some leads simply go cold. The
+          brief: <em>respond to every new lead within minutes, in a consistent on-brand voice, without hiring anyone</em>
+          — using only no-code / low-code tools plus generative AI, exactly the toolkit this course teaches.</p>
+
+        <p class="body"><strong>The shape of the solution.</strong> A single <strong>no-code form</strong> becomes the
+          one front door for leads. Each submission triggers a <strong>low-code automation</strong> (a Make / Zapier
+          scenario, modelled here as a step graph) that scores and routes the lead, calls a
+          <strong>generative-AI step</strong> to draft a tailored reply, writes the lead and the draft to a
+          <strong>no-code database</strong> (Airtable), and notifies the founder for a one-click send. A human still
+          approves every outbound message — the AI drafts, the person decides.</p>
+
+        <h3>Goal</h3>
+        <ul class="obj">
+          <li><strong>Cut first-response time</strong> from a morning batch (often 6–18 h) to under 5 minutes, around the clock.</li>
+          <li><strong>Standardise quality</strong> — every lead gets an on-brand, complete first reply with the right next step.</li>
+          <li><strong>Keep a human in the loop</strong> — the AI proposes, the founder approves; nothing auto-sends.</li>
+          <li><strong>Spend almost nothing</strong> — assemble it from free / low tiers of tools the course already covers.</li>
+        </ul>
+
+        <h3>Sessions exercised</h3>
+        <div class="tags">
+          <span class="tag sess">S1 · no-code &amp; AI framing</span>
+          <span class="tag sess">S2–3 · the form's landing page</span>
+          <span class="tag sess">S6 · Zapier / Make automation</span>
+          <span class="tag sess">S7 · RPA &amp; automation ROI</span>
+          <span class="tag sess">S8 · forms</span>
+          <span class="tag sess">S10 · Airtable database</span>
+          <span class="tag sess">S11 · chatbot / intent routing</span>
+          <span class="tag sess">S12 · generative AI (LLM, tokens)</span>
+        </div>
+
+        <h3>Tools used</h3>
+        <div class="tags">
+          <span class="tag tool">Typeform / Tally (form)</span>
+          <span class="tag tool">Make / Zapier (automation)</span>
+          <span class="tag tool">OpenAI / Anthropic LLM API</span>
+          <span class="tag tool">Airtable (database)</span>
+          <span class="tag tool">Gmail / Slack (notify)</span>
+        </div>
+
+        <div class="meta-grid" style="margin-top:0.9rem;">
+          <div class="meta-cell"><div class="k">Build time</div><div class="v mono">≈ 1 day</div></div>
+          <div class="meta-cell"><div class="k">Hand-written code</div><div class="v mono">~20 lines</div></div>
+          <div class="meta-cell"><div class="k">Monthly run cost</div><div class="v mono">€20–35</div></div>
+          <div class="meta-cell"><div class="k">Leads / month</div><div class="v mono">120</div></div>
+          <div class="meta-cell"><div class="k">First-response SLA</div><div class="v mono">&lt; 5 min</div></div>
+          <div class="meta-cell"><div class="k">Human approval</div><div class="v">always</div></div>
+        </div>
+
+        <div class="toc">
+          <span style="color:var(--muted);font-size:0.74rem;">jump to →</span>
+          <a href="#problem">2 · workflow design</a>
+          <a href="#build">3 · no-code build</a>
+          <a href="#genai">4 · GenAI step</a>
+          <a href="#impact">5 · impact &amp; ROI</a>
+          <a href="#risks">6 · risks</a>
+          <a href="#outcomes">7 · outcomes</a>
+          <a href="#extensions">8 · extensions</a>
+          <a href="#refs">9 · references</a>
+        </div>
+      </section>
+
+      <!-- 2. THE PROBLEM & WORKFLOW DESIGN --------------------------------- -->
+      <section class="demo" id="problem">
+        <h2>2. The problem &amp; the workflow design</h2>
+        <p class="cap">Before touching a tool, decompose the manual routine into a <span class="mono">trigger → filter →
+          action</span> graph — the exact mental model from the automation session and the
+          <a href="./index.html#flow">automation pipeline demo</a>.</p>
+
+        <p class="body"><strong>The manual routine, written out.</strong> (1) A lead lands somewhere — form, DM, inbox.
+          (2) The founder reads it and guesses how serious it is. (3) They look up a rough price for the kind of job.
+          (4) They write a reply from scratch. (5) They paste a booking link. (6) They make a mental note to follow up.
+          Steps 2–5 are <em>repetitive and rule-shaped</em> — the ideal candidate for automation, with the genuinely
+          human judgement (does this reply sound right? is the quote sane?) preserved as a final approval gate.</p>
+
+        <p class="body"><strong>The redesigned flow.</strong> Collapse the three inboxes into one form, then let the
+          automation do the mechanical middle while a person keeps the final say:</p>
+
+        <div class="diagram">┌──────────────┐     <b>TRIGGER</b>        ┌───────────────────────────┐
+│  No-code     │  new submission   │  Automation scenario      │
+│  FORM        │ ────────────────▶ │  (Make / Zapier)          │
+│ (Typeform)   │   webhook JSON    │                           │
+└──────────────┘                   │  ┌─────────────────────┐  │
+                                   │  │ 1 <b>normalise</b> fields  │  │
+                                   │  └──────────┬──────────┘  │
+                                   │  ┌──────────▼──────────┐  │
+                                   │  │ 2 <b>FILTER</b> + score    │  │  budget? service? urgency?
+                                   │  │   route: hot / warm │  │  →  rule-based, like an intent
+                                   │  └──────────┬──────────┘  │
+                                   │  ┌──────────▼──────────┐  │
+                                   │  │ 3 <b>GENERATIVE-AI</b>     │  │  prompt → LLM → draft reply
+                                   │  │   draft reply (LLM) │  │  (the only written code)
+                                   │  └──────────┬──────────┘  │
+                                   │  ┌──────────▼──────────┐  │
+                                   │  │ 4 <b>ACTION</b>: write row  │  │
+                                   │  └──────────┬──────────┘  │
+                                   └─────────────┼─────────────┘
+                  ┌──────────────────────────────┼──────────────────────────────┐
+                  ▼                               ▼                              ▼
+         ┌─────────────────┐           ┌────────────────────┐         ┌──────────────────┐
+         │  Airtable BASE  │           │  Slack / email     │         │  Human APPROVES  │
+         │  Leads table    │           │  "new lead + draft"│ ──────▶ │  edits & sends   │
+         └─────────────────┘           └────────────────────┘         └──────────────────┘</div>
+
+        <div class="keyidea"><b>Design principle:</b> automate the mechanical middle (normalise → score → draft → log),
+          but never the irreversible edge. Sending an email to a customer is irreversible, so a human stays on that
+          boundary. The same <b>trigger → filter → action</b> spine powers the
+          <a href="./index.html#flow">automation demo</a>; the routing in step 2 is the keyword-and-rule scoring you can
+          watch in the <a href="./index.html#bot">chatbot intent-routing demo</a>.</p></div>
+
+        <h3>The form (the one front door)</h3>
+        <p class="body">A short Typeform / Tally form captures only what's needed to draft a good reply — the
+          <em>"ask only what you need"</em> rule from the forms session. Fields:</p>
+        <ul class="obj">
+          <li><strong>name</strong> · <strong>email</strong> (validated) — who to reply to.</li>
+          <li><strong>service</strong> (select: balcony garden · roof terrace · maintenance · other) — drives the quote band.</li>
+          <li><strong>budget band</strong> (select) and <strong>timeline</strong> (select) — feed the lead score.</li>
+          <li><strong>message</strong> (free text) — the raw context the LLM personalises against.</li>
+        </ul>
+        <div class="tags">
+          <a class="tag demo-link" href="./index.html#flow">demo · automation pipeline</a>
+          <a class="tag demo-link" href="./index.html#bot">demo · chatbot intent routing</a>
+          <a class="tag demo-link" href="./index.html#db">demo · no-code database</a>
+          <a class="tag sess" href="./course.html#program">course · Sessions 6–8</a>
+        </div>
+      </section>
+
+      <!-- 3. THE NO-CODE / LOW-CODE BUILD ---------------------------------- -->
+      <section class="demo" id="build">
+        <h2>3. The no-code / low-code build, step by step</h2>
+        <p class="cap">Each step is a few clicks in a visual builder. Only step 4 holds any hand-written code — and even
+          that is a single API call. Everything else is configuration.</p>
+
+        <div class="steps">
+          <div class="step">
+            <h4>Build the form</h4>
+            <p>In Typeform/Tally, add the five fields above. Turn on email-format validation and make
+              <span class="mono">service</span>, <span class="mono">budget</span> and <span class="mono">timeline</span>
+              required <em>select</em> fields — structured input keeps the downstream data clean. Embed the form on the
+              site's contact page (the page you built in the website-creation sessions).</p>
+          </div>
+          <div class="step">
+            <h4>Create the Airtable base</h4>
+            <p>One table, <span class="mono">Leads</span>, with typed fields: <span class="mono">Name</span>,
+              <span class="mono">Email</span>, <span class="mono">Service</span> (single-select),
+              <span class="mono">Budget</span>, <span class="mono">Timeline</span>, <span class="mono">Message</span>,
+              <span class="mono">Score</span> (number), <span class="mono">Tier</span> (hot/warm/cold),
+              <span class="mono">DraftReply</span> (long text), <span class="mono">Status</span>
+              (new → approved → sent), <span class="mono">CreatedAt</span>. This is the single source of truth.</p>
+          </div>
+          <div class="step">
+            <h4>Wire the trigger</h4>
+            <p>In Make, start a scenario with the <em>"Watch new form responses"</em> trigger. The form posts a JSON
+              payload — name, email, service, budget, timeline, message — into the scenario. No code; you map fields
+              by dragging.</p>
+          </div>
+          <div class="step">
+            <h4>Filter &amp; score the lead</h4>
+            <p>Add a small rule module: a clear budget + short timeline ⇒ <span class="mono">hot</span>; some budget ⇒
+              <span class="mono">warm</span>; otherwise <span class="mono">cold</span>. This is the same keyword/rule
+              scoring as the chatbot intent router — deterministic, auditable, and cheap. Hot leads can later get a
+              faster SLA or a different template.</p>
+          </div>
+          <div class="step">
+            <h4>Call the generative-AI step</h4>
+            <p>Add an HTTP / "Make a request" module (or a tiny serverless function) that sends a carefully designed
+              prompt to an LLM API and gets back a draft reply. This is <strong>the only written code in the whole
+              project</strong> — detailed in section 4 below.</p>
+          </div>
+          <div class="step">
+            <h4>Write the row &amp; notify</h4>
+            <p>An Airtable "Create record" module writes the lead, the score, the tier and the
+              <span class="mono">DraftReply</span> with <span class="mono">Status = new</span>. A Slack / Gmail module
+              pings the founder with the lead summary and the draft. They open Airtable, tweak a word if needed, flip
+              <span class="mono">Status → approved</span>, and a second tiny scenario sends the email.</p>
+          </div>
+        </div>
+
+        <div class="note"><b>Build-vs-buy, noted early:</b> every step here is configuration in a tool someone else
+          maintains — you are <em>buying</em> the form, the automation runtime, the database and the model, and only
+          <em>building</em> the ~20 lines of glue in step 5. That ratio is the whole point of low-code. The full
+          build-vs-buy reflection is in section 5.</p></div>
+
+        <div class="tags">
+          <a class="tag demo-link" href="./index.html#nocode">demo · no-code builder</a>
+          <a class="tag demo-link" href="./index.html#db">demo · no-code database</a>
+          <a class="tag demo-link" href="./index.html#flow">demo · automation pipeline</a>
+          <a class="tag sess" href="./course.html#program">course · Sessions 2–10</a>
+        </div>
+      </section>
+
+      <!-- 4. THE GENERATIVE-AI STEP ---------------------------------------- -->
+      <section class="demo" id="genai">
+        <h2>4. The generative-AI step — prompt design + the API call</h2>
+        <p class="cap">This is where the course's generative-AI content becomes a working component. Good output needs a
+          good prompt — <em>"minimum-effort prompts give low-quality results"</em>, straight from the syllabus's GenAI
+          policy.</p>
+
+        <h3>Prompt design</h3>
+        <p class="body">The prompt is engineered, not improvised. It does four things: (a) sets a <strong>role and
+          voice</strong> so replies are on-brand; (b) injects the <strong>lead's structured data</strong> so the reply
+          is specific; (c) gives <strong>hard rules</strong> (quote bands, length, always include the booking link,
+          never invent facts); and (d) pins the <strong>output format</strong> so the automation can use it directly.
+          A <em>system</em> message carries the durable rules; a <em>user</em> message carries the per-lead data.</p>
+
+        <div class="prompt"><span class="ph">[SYSTEM]</span>
+You are the assistant for "Verde Jardín", a friendly two-person urban-gardening
+studio. Write the FIRST reply to a new enquiry. Voice: warm, concise, professional,
+plain language. Rules:
+- 90–130 words, no jargon, sign off as "The Verde Jardín team".
+- Acknowledge their specific request; do NOT invent details they didn't give.
+- Give a price BAND only, from this table; never a single fixed price:
+    balcony garden  €300–700   ·  roof terrace  €1,500–4,000
+    maintenance     €60–120/mo ·  other         "depends, happy to scope it"
+- Always end with the booking link: https://verde.example/book
+- If essential info is missing, ask ONE clarifying question instead of guessing.
+Return STRICT JSON: {"subject": "...", "body": "...", "needs_human_note": "..."}
+
+<span class="ph">[USER]</span>
+name: <span class="ph">{{name}}</span>
+service: <span class="ph">{{service}}</span>      budget: <span class="ph">{{budget}}</span>      timeline: <span class="ph">{{timeline}}</span>
+message: """<span class="ph">{{message}}</span>"""</div>
+
+        <div class="keyidea"><b>Why these choices:</b> the price <b>band</b> table and the "don't invent details" rule
+          directly fight <b>hallucination</b>; <b>strict JSON</b> output lets the Make scenario parse the reply with no
+          extra code; the single-clarifying-question fallback mirrors a chatbot's graceful fallback. Temperature is kept
+          low (≈0.4) so replies stay consistent — the same temperature idea you can tune in the
+          <a href="./index.html#attn">attention demo</a>.</p></div>
+
+        <h3>The API call (the only real code)</h3>
+        <p class="body">Inside the automation's HTTP step (or a 1-file serverless function), this is the entire
+          generative-AI integration — a single <code class="inl">fetch</code> to a chat-completions endpoint. Tokens in,
+          tokens out: the LLM reads the prompt as the <a href="./index.html#token">tokens</a> from the tokenizer demo and
+          predicts the reply via <a href="./index.html#attn">attention</a>.</p>
+
+        <pre class="code"><code><span class="tok-c">// draftReply.js — called by the Make/Zapier HTTP step (or a serverless fn).</span>
+<span class="tok-c">// Input: the lead object from the form. Output: a parsed draft reply.</span>
+<span class="tok-k">export async function</span> <span class="tok-f">draftReply</span>(lead) {
+  <span class="tok-k">const</span> system = <span class="tok-s">`You are the assistant for "Verde Jardín"... (full system prompt above)`</span>;
+  <span class="tok-k">const</span> user = <span class="tok-s">`name: ${lead.name}
+service: ${lead.service}   budget: ${lead.budget}   timeline: ${lead.timeline}
+message: """${lead.message}"""`</span>;
+
+  <span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">"https://api.openai.com/v1/chat/completions"</span>, {
+    method:  <span class="tok-s">"POST"</span>,
+    headers: {
+      <span class="tok-s">"Content-Type"</span>:  <span class="tok-s">"application/json"</span>,
+      <span class="tok-c">// key lives in an env var / Make connection — NEVER in client code</span>
+      <span class="tok-s">"Authorization"</span>: <span class="tok-s">`Bearer ${process.env.LLM_API_KEY}`</span>
+    },
+    body: <span class="tok-f">JSON.stringify</span>({
+      model:           <span class="tok-s">"gpt-4o-mini"</span>,   <span class="tok-c">// cheap, fast, good enough for drafts</span>
+      temperature:     <span class="tok-n">0.4</span>,            <span class="tok-c">// low = consistent, on-brand</span>
+      max_tokens:      <span class="tok-n">320</span>,
+      response_format: { type: <span class="tok-s">"json_object"</span> }, <span class="tok-c">// force parseable JSON</span>
+      messages: [
+        { role: <span class="tok-s">"system"</span>, content: system },
+        { role: <span class="tok-s">"user"</span>,   content: user }
+      ]
+    })
+  });
+
+  <span class="tok-k">if</span> (!res.ok) <span class="tok-k">throw new</span> <span class="tok-f">Error</span>(<span class="tok-s">`LLM error ${res.status}`</span>); <span class="tok-c">// fail loud → human handles it</span>
+  <span class="tok-k">const</span> data = <span class="tok-k">await</span> res.<span class="tok-f">json</span>();
+  <span class="tok-k">const</span> draft = <span class="tok-f">JSON.parse</span>(data.choices[<span class="tok-n">0</span>].message.content);
+
+  <span class="tok-c">// draft = { subject, body, needs_human_note } → goes into Airtable as a DRAFT.</span>
+  <span class="tok-c">// Status stays "new"; nothing is sent until a human approves it.</span>
+  <span class="tok-k">return</span> draft;
+}</code></pre>
+        <p class="codecap">~20 lines. The API key is read from an environment variable / the platform's stored
+          connection — never hard-coded and never exposed to the browser. The call returns strict JSON so the no-code
+          steps downstream need zero parsing logic.</p>
+
+        <div class="tags">
+          <a class="tag demo-link" href="./index.html#token">demo · tokenizer</a>
+          <a class="tag demo-link" href="./index.html#attn">demo · attention</a>
+          <a class="tag demo-link" href="./index.html#bot">demo · chatbot</a>
+          <a class="tag sess" href="./course.html#program">course · Session 12</a>
+        </div>
+      </section>
+
+      <!-- 5. RESULTS & IMPACT ANALYSIS ------------------------------------- -->
+      <section class="demo" id="impact">
+        <h2>5. Results &amp; impact analysis — a worked ROI</h2>
+        <p class="cap">The automation session's core skill: judge whether automating actually pays. Numbers below are a
+          worked baseline for Verde Jardín — change the assumptions and the model still holds. Tune the same levers live
+          in the <a href="./index.html#rpa">RPA ROI demo</a>.</p>
+
+        <h3>Assumptions</h3>
+        <ul class="obj">
+          <li><strong>Volume:</strong> 120 leads / month.</li>
+          <li><strong>Manual handling:</strong> ≈ 8 minutes per lead (read, look up a price, write, paste link, log).</li>
+          <li><strong>Automated handling:</strong> ≈ 1.5 minutes per lead (skim the draft, tweak, approve).</li>
+          <li><strong>Founder's loaded time:</strong> €30 / hour.</li>
+          <li><strong>Build effort:</strong> ≈ 8 hours, one-off (a day of setup at €30/h = €240).</li>
+          <li><strong>Run cost:</strong> ≈ €30 / month (form + Make + Airtable low tiers + ~€3 of LLM tokens).</li>
+        </ul>
+
+        <h3>Monthly time &amp; cost</h3>
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Line</th>
+              <th class="num">Before (manual)</th>
+              <th class="num">After (assisted)</th>
+              <th class="num">Saving</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Minutes per lead</td><td class="num">8.0</td><td class="num">1.5</td><td class="num">6.5</td></tr>
+            <tr><td>Leads per month</td><td class="num">120</td><td class="num">120</td><td class="num">—</td></tr>
+            <tr><td>Hours per month</td><td class="num">16.0</td><td class="num">3.0</td><td class="num">13.0</td></tr>
+            <tr><td>Labour cost @ €30/h</td><td class="num">€480</td><td class="num">€90</td><td class="num">€390</td></tr>
+            <tr><td>Tool run cost</td><td class="num">€0</td><td class="num">€30</td><td class="num">−€30</td></tr>
+            <tr class="total"><td>Net monthly saving</td><td class="num"></td><td class="num"></td><td class="num">€360</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <h3>Payback &amp; first-year return</h3>
+        <p class="body">One-off build cost is ≈ <span class="mono">€240</span> (8 h × €30). At
+          <span class="mono">€360</span> net saving per month:</p>
+        <p class="body" style="font-family:var(--font-mono);font-size:0.85rem;">
+          payback $= \dfrac{\text{build cost}}{\text{net monthly saving}} = \dfrac{240}{360} \approx 0.67 \text{ months} \approx 20 \text{ days}$
+        </p>
+        <p class="body" style="font-family:var(--font-mono);font-size:0.85rem;">
+          first-year net $= (360 \times 12) - 240 = 4{,}320 - 240 = €4{,}080$
+        </p>
+
+        <div class="kpis">
+          <div class="kpi"><div class="kv">13 h</div><div class="kl">founder hours freed / month</div></div>
+          <div class="kpi"><div class="kv">~20 days</div><div class="kl">payback period</div></div>
+          <div class="kpi"><div class="kv">€4,080</div><div class="kl">net first-year saving</div></div>
+          <div class="kpi"><div class="kv">&lt; 5 min</div><div class="kl">first-response time (was 6–18 h)</div></div>
+        </div>
+
+        <p class="body" style="margin-top:0.9rem;"><strong>The non-financial return matters more.</strong> The time
+          saving is real, but the bigger win is the <em>revenue protected</em>: leads that used to go cold while waiting
+          overnight now get a complete, on-brand reply within minutes. Even a small lift in lead-to-booking conversion
+          (say 120 leads × a few extra bookings at hundreds of euros each) dwarfs the €360 of labour saved — and that is
+          the argument to make to a real business.</p>
+
+        <h3>Build vs. buy</h3>
+        <div class="twocol">
+          <div>
+            <p class="body"><strong>Why build (assemble) this:</strong> off-the-shelf "AI reply" SaaS for SMBs runs
+              €50–200 / month, often locks you into their CRM, and rarely matches a niche brand voice. This assembly is
+              ≈ €30/month, owns its own data in Airtable, and the prompt is fully under the studio's control. The only
+              real "build" is ~20 lines of glue.</p>
+          </div>
+          <div>
+            <p class="body"><strong>When to buy instead:</strong> once volume passes a few hundred leads/day, or the team
+              needs audit logs, role permissions, deliverability handling and SLAs, a maintained product is worth it —
+              the glue code and a hobby-tier automation become a liability. <em>Build to validate; buy to scale.</em></p>
+          </div>
+        </div>
+
+        <div class="tags">
+          <a class="tag demo-link" href="./index.html#rpa">demo · RPA ROI</a>
+          <a class="tag demo-link" href="./index.html#flow">demo · hours saved</a>
+          <a class="tag demo-link" href="./index.html#token">demo · token cost</a>
+          <a class="tag sess" href="./course.html#program">course · Session 7</a>
+        </div>
+      </section>
+
+      <!-- 6. RISKS & LIMITATIONS ------------------------------------------- -->
+      <section class="demo" id="risks">
+        <h2>6. Risks &amp; limitations</h2>
+        <p class="cap">The syllabus is explicit: assume GenAI output is wrong unless you can check it, and acknowledge
+          its use. A responsible build designs for failure, not just for the happy path.</p>
+
+        <div class="twocol">
+          <div>
+            <h3>Hallucination &amp; wrong facts</h3>
+            <ul class="obj">
+              <li><strong>The risk:</strong> the model invents a price, a service the studio doesn't offer, or a false promise.</li>
+              <li><strong>Mitigation:</strong> the prompt supplies the only allowed price <em>bands</em> and forbids inventing details; the <strong>human approval gate</strong> means nothing reaches a customer unread; low temperature reduces drift.</li>
+            </ul>
+            <h3>Data privacy</h3>
+            <ul class="obj">
+              <li><strong>The risk:</strong> a lead's name, email and message are sent to a third-party model provider.</li>
+              <li><strong>Mitigation:</strong> send only the minimum fields needed; use a provider/tier with a no-training-on-data guarantee; disclose AI use and data handling in the form's privacy note (GDPR lawful basis + consent); never log the API key.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Other failure modes</h3>
+            <ul class="obj">
+              <li><strong>Tone / brand drift:</strong> replies sound generic. Mitigation: tight voice rules + periodic review of a sample of drafts.</li>
+              <li><strong>API outage / cost spike:</strong> the LLM call fails or a loop runs up tokens. Mitigation: <span class="mono">fail loud</span> (the code throws) so the lead falls back to manual; a monthly spend cap on the key.</li>
+              <li><strong>Over-automation:</strong> auto-sending would turn one bad draft into a bad customer experience at scale. Mitigation: keep the human gate — the irreversible step is never automated.</li>
+              <li><strong>Prompt injection:</strong> a lead's message tries to override instructions. Mitigation: treat the message as untrusted data, keep rules in the system role, and a human still reads every reply.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="note"><b>Acknowledgement (per the GenAI policy):</b> this workflow uses a generative LLM to
+          <em>draft</em> customer replies; a human reviews and approves every message before it is sent. Prompts and
+          model are documented above. Drafts are treated as suggestions, not facts.</p></div>
+      </section>
+
+      <!-- 7. MAPPING TO LEARNING OUTCOMES ---------------------------------- -->
+      <section class="demo" id="outcomes">
+        <h2>7. Mapping to course learning outcomes</h2>
+        <p class="cap">How this single project evidences each course-level objective from the
+          <a href="./course.html#objectives">syllabus</a>.</p>
+        <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th>Course objective</th><th>How this project demonstrates it</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Familiarity with the disruptive technologies</strong></td>
+              <td>Uses no-code forms &amp; databases, low-code automation, and a generative LLM together — and is explicit about where each one's limits lie (the risks section).</td>
+            </tr>
+            <tr>
+              <td><strong>Key technological trends</strong></td>
+              <td>Embodies the "citizen developer" trend: a non-engineer ships a working AI pipeline in a day with ~20 lines of code, the course's central thesis.</td>
+            </tr>
+            <tr>
+              <td><strong>Reflect on how the tech affects people</strong></td>
+              <td>Weighs founder time freed against customer experience, privacy of leads' data, and the choice to keep a human in the loop rather than fully automate a human interaction.</td>
+            </tr>
+            <tr>
+              <td><strong>Present a use case &amp; apply critical thinking</strong></td>
+              <td>A concrete societal/SMB use case with a worked ROI, an honest build-vs-buy call, and a frank treatment of hallucination, privacy and over-automation.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="body" style="margin-top:0.8rem;"><strong>Skills exercised:</strong> using no-code form &amp; database
+          builders, building a trigger→action automation, judging automation ROI, foundational generative-AI and prompt
+          engineering, and integrating a model via an API — the full skills list from the
+          <a href="./course.html#objectives">objectives</a>.</p>
+        <div class="tags">
+          <a class="tag sess" href="./course.html#objectives">course · learning objectives</a>
+          <a class="tag demo-link" href="./index.html#sdg">demo · impact prioritisation</a>
+        </div>
+      </section>
+
+      <!-- 8. EXTENSIONS ---------------------------------------------------- -->
+      <section class="demo" id="extensions">
+        <h2>8. Extensions</h2>
+        <p class="cap">Natural next steps once the core pipeline is trusted — each maps to another course session.</p>
+        <ul class="obj">
+          <li><strong>Multi-channel intake</strong> — add Instagram-DM and email-parsing triggers so all three inboxes feed the same form schema (more <a href="./index.html#flow">automation</a>, Session 6).</li>
+          <li><strong>A real chatbot front end</strong> — replace the static form with a ManyChat/Tars bot that asks the same questions conversationally and routes by <a href="./index.html#bot">intent</a> (Session 11).</li>
+          <li><strong>Payments &amp; booking</strong> — when a lead books, take a deposit via Stripe and let the webhook fire a confirmation automation (Session 9).</li>
+          <li><strong>Retrieval grounding</strong> — give the LLM a small knowledge base (past quotes, FAQs) so drafts cite real numbers, further cutting hallucination.</li>
+          <li><strong>Image generation</strong> — auto-attach an AI mood-board image for the proposed garden style with a diffusion model (Session 12, <a href="./index.html#diffusion">diffusion demo</a>).</li>
+          <li><strong>A/B the prompt</strong> — log which drafts the founder edits most and refine the system prompt — prompt engineering as a measured, iterative loop.</li>
+        </ul>
+        <div class="tags">
+          <a class="tag demo-link" href="./index.html#diffusion">demo · diffusion</a>
+          <a class="tag demo-link" href="./index.html#network">demo · network effects</a>
+          <a class="tag sess" href="./course.html#program">course · Sessions 6–12</a>
+        </div>
+      </section>
+
+      <!-- 9. REFERENCES ---------------------------------------------------- -->
+      <section class="demo" id="refs">
+        <h2>9. References</h2>
+        <p class="cap">Grounded in the course bibliography and syllabus, plus the provider docs for the API used.</p>
+        <ul class="biblio">
+          <li>
+            <span class="title">Introduction to Generative AI</span> — Dhamani, Numa &amp; Engler, Maggie (2024), Manning. <span class="mono">ISBN 9781633437197</span><br/>
+            <span class="meta">How LLMs work and how to integrate generative AI into workflows responsibly — the basis for the prompt-design and risk sections. ·
+            <a href="https://www.manning.com/books/introduction-to-generative-ai" target="_blank">manning.com</a></span>
+          </li>
+          <li>
+            <span class="title">Generative AI in Practice</span> — Marr, Bernard (2024), Wiley. <span class="mono">ISBN 9781394245567</span><br/>
+            <span class="meta">Real-world business applications, risks and the changing job market — the "so what" behind the impact analysis. ·
+            <a href="https://www.wiley.com/en-es/Generative+AI+in+Practice%3A+100%2B+Amazing+Ways+Generative+Artificial+Intelligence+is+Changing+Business+and+Society-p-9781394254248" target="_blank">wiley.com</a></span>
+          </li>
+          <li>
+            <span class="title">The Low-Code Handbook</span> — Cabot, Jordi (2024), Kindle. <span class="mono">ISBN 9789998778504</span><br/>
+            <span class="meta">Platforms, integration and best practices — the reference for the form, database and automation build. · <a href="https://lowcode-book.com/" target="_blank">lowcode-book.com</a></span>
+          </li>
+          <li>
+            <span class="title">Low-Code/No-Code: Citizen Developers</span> — Simon, Phil (2022), Racket Publishing. <span class="mono">ISBN 9798985814736</span><br/>
+            <span class="meta">Why non-engineers can build valuable software — the framing for this whole project. · <a href="https://www.philsimon.com/books/low-code-no-code/" target="_blank">philsimon.com</a></span>
+          </li>
+          <li>
+            <span class="title">Technology with Impact — course syllabus</span> — Oleaga Guridi, Jon (2025), IE University.<br/>
+            <span class="meta">Sessions 1–12 content, the GenAI policy and the learning objectives this project is mapped to. · <a href="./SYLLABUS.pdf" target="_blank">SYLLABUS.pdf</a></span>
+          </li>
+          <li>
+            <span class="title">Chat Completions API reference</span> — OpenAI / Anthropic provider documentation.<br/>
+            <span class="meta">The request/response shape used by the <code class="inl">fetch</code> call in section 4 (model, temperature, messages, JSON output).</span>
+          </li>
+        </ul>
+        <p class="body" style="margin-top:0.9rem;"><strong>Explore the mechanics behind this project:</strong>
+          <a href="./index.html#flow">automation pipeline</a> ·
+          <a href="./index.html#rpa">RPA ROI</a> ·
+          <a href="./index.html#bot">chatbot intent routing</a> ·
+          <a href="./index.html#token">tokenizer</a> ·
+          <a href="./index.html#attn">attention</a> ·
+          <a href="./index.html#db">no-code database</a> ·
+          <a href="./index.html#nocode">no-code builder</a> · or read the
+          <a href="./course.html">full course outline</a>.</p>
+      </section>
+    </main>
+
+    <footer>
+      <span>tech-lab — Andrea Montana · IE BCSAI</span>
+      <span class="more">
+        <a href="https://github.com/andreaisabelmontana/discrete-math-lab" target="_blank">discrete-math-lab</a>
+        <a href="https://github.com/andreaisabelmontana/prob-stats-lab" target="_blank">prob-stats-lab</a>
+        <a href="https://github.com/andreaisabelmontana/modeling-lab" target="_blank">modeling-lab</a>
+        <a href="https://github.com/andreaisabelmontana/cloud-lab" target="_blank">cloud-lab</a>
+        <a href="https://github.com/andreaisabelmontana/tech-lab" target="_blank">source</a>
+      </span>
+    </footer>
+  </body>
+</html>
