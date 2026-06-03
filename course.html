@@ -73,6 +73,23 @@
       .module-head h3 { font-size: 0.96rem; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
       .module-head .span { color: var(--muted); font-size: 0.76rem; font-family: var(--font-mono); }
 
+      /* module overview block (enrichment) */
+      .module-intro {
+        margin: 0.6rem 0 0.2rem; padding: 0.7rem 0.85rem;
+        background: var(--bg); border: 1px solid var(--rule); border-radius: 6px;
+      }
+      .module-intro p { color: var(--ink-soft); font-size: 0.84rem; margin: 0 0 0.5rem; }
+      .module-intro p:last-child { margin-bottom: 0; }
+      .module-intro .oc-label {
+        font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+        color: var(--muted); font-weight: 700; margin: 0 0 0.3rem;
+      }
+      ul.outcomes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+      ul.outcomes li { position: relative; padding-left: 1.1rem; color: var(--ink-soft); font-size: 0.82rem; }
+      ul.outcomes li::before {
+        content: '→'; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 700; font-size: 0.8rem;
+      }
+
       /* timeline of sessions */
       .timeline { position: relative; margin: 0.6rem 0 0; padding-left: 1.6rem; }
       .timeline::before {
@@ -92,10 +109,19 @@
       .sess.proj .num { border-color: var(--good); color: var(--good); font-size: 0.6rem; }
       .sess h4 { font-size: 0.9rem; font-weight: 700; color: var(--ink); margin: 0.15rem 0 0.1rem; }
       .sess .sobj { color: var(--ink-soft); font-size: 0.82rem; margin: 0 0 0.4rem; }
-      .sess ul.topics { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+      .sess ul.topics { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
       .sess ul.topics li { position: relative; padding-left: 1rem; color: var(--ink-soft); font-size: 0.81rem; }
       .sess ul.topics li::before { content: '·'; position: absolute; left: 0.25rem; color: var(--accent); font-weight: 700; }
       .sess ul.topics li .mono { font-family: var(--font-mono); font-size: 0.8rem; }
+      .sess ul.topics li strong { color: var(--ink); font-weight: 600; }
+
+      /* key idea callout (enrichment) */
+      .keyidea {
+        margin: 0 0 0.5rem; padding: 0.45rem 0.6rem;
+        border-left: 3px solid var(--accent); background: var(--accent-soft);
+        border-radius: 0 4px 4px 0; font-size: 0.79rem; color: var(--ink-soft);
+      }
+      .keyidea b { color: var(--ink); font-weight: 700; }
 
       .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
       .tag {
@@ -106,17 +132,28 @@
       .tag.demo-link { color: var(--accent); border-color: var(--accent); }
       .tag.read { color: var(--muted); }
       .tag.read::before { content: '📖 '; }
+      .tag.tool::before { content: '🛠 '; }
 
       .pill {
         display: inline-block; font-size: 0.7rem; font-family: var(--font-mono); font-weight: 600;
         color: var(--accent); background: var(--accent-soft); padding: 0.1em 0.5em; border-radius: 4px;
         margin-left: 0.4rem; vertical-align: middle;
       }
+
+      /* glossary (enrichment) */
+      .glossary { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 1.4rem; }
+      @media (max-width: 760px) { .glossary { grid-template-columns: 1fr; } }
+      .glossary dt { color: var(--ink); font-weight: 700; font-size: 0.84rem; }
+      .glossary dt .mono { font-family: var(--font-mono); font-weight: 600; }
+      .glossary dd { margin: 0.1rem 0 0; color: var(--ink-soft); font-size: 0.81rem; line-height: 1.45; }
+      .glossary .gterm { padding-bottom: 0.15rem; border-bottom: 1px dotted var(--rule); margin-bottom: 0.15rem; }
+
       .biblio { list-style: none; margin: 0.3rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
       .biblio li { font-size: 0.84rem; color: var(--ink-soft); padding-left: 1.1rem; position: relative; }
       .biblio li::before { content: ''; position: absolute; left: 0; top: 0.45em; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
       .biblio .title { color: var(--ink); font-weight: 600; }
       .biblio .meta { color: var(--muted); font-size: 0.78rem; }
+      .biblio .used { color: var(--accent); font-family: var(--font-mono); font-size: 0.74rem; }
     </style>
   </head>
   <body>
@@ -131,6 +168,7 @@
         <a href="#objectives">objectives</a>
         <a href="#assessment">assessment</a>
         <a href="#program">program</a>
+        <a href="#concepts">key concepts</a>
         <a href="#biblio">bibliography</a>
         <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
       </nav>
@@ -148,6 +186,13 @@
           generations and cultures — focusing specifically on how society, organizations and people <em>apply</em>
           technology. A practical, human-centered approach helps students frame, develop and discover how technology can
           serve their future aspirations and solve real problems faced by society, organizations and individuals.</p>
+        <p class="lede">The course is built around a single thesis: software no longer needs to be written by
+          professional developers to be valuable. <strong>Low-code</strong> platforms reduce hand-written code to a
+          minimum; <strong>no-code</strong> platforms remove it entirely behind a visual interface; and
+          <strong>generative AI</strong> lets anyone produce text, images and even working applications from a plain
+          prompt. Together they turn business users into "citizen developers" who can ship a website, an app, an
+          automated workflow or a chatbot in days rather than months — and the course asks students to weigh both the
+          power and the risks of that shift.</p>
         <p class="lede">Every concept here has a hands-on counterpart in the
           <a href="./index.html">interactive demos</a>: tune a Bass adoption curve, drop blocks in a no-code builder,
           wire a Zapier-style pipeline, tokenize text for an LLM, or watch a diffusion model denoise an image.</p>
@@ -166,6 +211,10 @@
           <div class="meta-cell"><div class="k">Professor</div><div class="v">Jon Oleaga Guridi</div></div>
           <div class="meta-cell"><div class="k">Contact</div><div class="v"><a href="mailto:joleaga@faculty.ie.edu">joleaga@faculty.ie.edu</a></div></div>
         </div>
+        <p class="bar-note">Professor Jon Oleaga is Academic Director of IE's Master in Digital Transformation, with 20+
+          years in digital media (SEO, SEM, social and web project management at Vocento), a decade advising ABC News in
+          Spain on tech, and founder of the reporting tool VisualBox (clients including the Red Cross, IKEA and the UN).
+          Office hours are by request via email.</p>
       </section>
 
       <!-- LEARNING OBJECTIVES ------------------------------------------- -->
@@ -179,10 +228,10 @@
           <div>
             <h3>Course-level objectives</h3>
             <ul class="obj">
-              <li><strong>Demonstrate familiarity</strong> with the fundamentals of the disruptive technologies discussed in the course.</li>
+              <li><strong>Demonstrate familiarity</strong> with the fundamentals of the disruptive technologies discussed in the course — knowing what each one is, when it applies, and where its limits lie.</li>
               <li><strong>Demonstrate knowledge</strong> of key technological trends in society, framing the technologies addressed in your course topic — and their latest developments — within them.</li>
-              <li><strong>Reflect</strong> on how the use of these technologies affects and influences lifestyles, behaviors and views across different groups of people (generational and other profile differences).</li>
-              <li><strong>Present &amp; discuss</strong> a use case of how a technology has been or could be applied to solve a specific societal problem, applying critical thinking to its potential implications.</li>
+              <li><strong>Reflect</strong> on how the use of these technologies affects and influences lifestyles, behaviors and views across different groups of people (generational and other profile or archetype differences).</li>
+              <li><strong>Present &amp; discuss</strong> a use case of how a technology has been or could be applied to solve a specific societal problem, applying critical thinking to identify the potential implications of its application.</li>
             </ul>
           </div>
           <div>
@@ -201,8 +250,9 @@
       <!-- METHODOLOGY + ASSESSMENT -------------------------------------- -->
       <section class="demo" id="assessment">
         <h2>Methodology &amp; assessment</h2>
-        <p class="cap">IE's teaching method is collaborative, active and applied. The 3 ECTS map to ≈75 hours of student
-          work, split across activity types below. Critical, acknowledged use of GenAI is encouraged throughout.</p>
+        <p class="cap">IE's teaching method is collaborative, active and applied — students build their own knowledge
+          and the professor leads and guides. The 3 ECTS map to ≈75 hours of student work, split across activity types
+          below. Critical, acknowledged use of GenAI is encouraged throughout.</p>
         <div class="twocol">
           <div>
             <h3>Learning-activity weighting (≈75 h total)</h3>
@@ -223,9 +273,37 @@
               <div class="bar-row"><span class="lbl">Individual assignments</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="pct">15%</span></div>
               <div class="bar-row"><span class="lbl">Class participation</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="pct">15%</span></div>
             </div>
-            <p class="bar-note">Minimum passing grade is 5.0. Test = closed-book quiz (20%) + closed-book open-ended
-              case (20%). Group work includes intermediate deliverables, final presentation and peer review.
-              Participation must not consider attendance.</p>
+            <p class="bar-note">Minimum passing grade is 5.0 (out of 10.0).</p>
+          </div>
+        </div>
+
+        <h3 style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin:1.1rem 0 0.4rem;font-weight:700;">What each component asks for</h3>
+        <ul class="obj">
+          <li><strong>Test — 40%.</strong> A closed-book <strong>quiz (20%)</strong> testing recall of course fundamentals, plus a closed-book <strong>open-ended case (20%)</strong> in which you analyse a scenario and argue a reasoned position. Sat in Session 13. <em>Evaluated on</em> accuracy, breadth of coverage and the quality of critical reasoning.</li>
+          <li><strong>Group work — 30%.</strong> The term-long team project applying course technologies to a chosen social problem. Includes <strong>intermediate deliverables</strong>, a <strong>final presentation</strong> (Sessions 14–15) and a <strong>peer review</strong>. <em>Evaluated on</em> the fit of technology to problem, working artefacts built, clarity of the pitch and individual contribution.</li>
+          <li><strong>Individual assignments — 15%.</strong> Assignments and take-home activities completed across the term. <em>Evaluated on</em> completeness, applied skill and acknowledged, critical use of any GenAI tools.</li>
+          <li><strong>Class participation — 15%.</strong> Pre-class and in-class readings, videos, quizzes, discussion forums and other engagement activities. <em>Evaluated on</em> contribution quality and engagement — it <strong>must not consider attendance</strong>.</li>
+        </ul>
+
+        <div class="twocol" style="margin-top:1rem;">
+          <div>
+            <h3>Re-sit, re-take &amp; attendance rules</h3>
+            <ul class="obj">
+              <li>Each student has <strong>four (4) chances</strong> to pass a course, across two academic years: each year has one ordinary call and one extraordinary "re-sit" call in June/July.</li>
+              <li>Failing in the ordinary call leads to a <strong>June/July re-sit</strong>, a single comprehensive evaluation; continuous-evaluation components do <em>not</em> carry over and the grade is <strong>capped at 8.0</strong> ("notable").</li>
+              <li>Re-sit format and dates <strong>cannot be changed</strong> and are announced in advance — plan summer commitments accordingly.</li>
+              <li><strong>Not meeting the attendance requirement automatically fails both calls</strong> for the year, forcing re-enrolment the next year (re-takers contact IE-IMPACT to confirm in-person attendance rules).</li>
+              <li>Failing more than <strong>18 ECTS</strong> after the re-sits means leaving the program. A graded-work review session is offered after each call.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>GenAI policy — critical use encouraged</h3>
+            <ul class="obj">
+              <li>GenAI use is <strong>encouraged</strong> to build an informed, critical perspective on its uses and outputs.</li>
+              <li><strong>Minimum-effort prompts give low-quality results</strong> — refining prompts is real work.</li>
+              <li>Never take output at face value: <strong>assume it is wrong</strong> unless you know the answer or can cross-check it; you own any errors.</li>
+              <li>AI is a tool you <strong>must acknowledge</strong>; doing so does not affect your grade, but failing to is an academic-honesty violation. State the system used, the prompts, and how outputs were used (or declare no AI content).</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -233,8 +311,9 @@
       <!-- FULL PROGRAM -------------------------------------------------- -->
       <section class="demo" id="program">
         <h2>Program — full session structure</h2>
-        <p class="cap">All 15 live in-person sessions, grouped by thematic module. Each carries its objectives, topic
-          bullets, the tools used, and a link to the matching interactive demo where one exists.</p>
+        <p class="cap">All 15 live in-person sessions, grouped by thematic module. Each module opens with an overview and
+          learning outcomes; each session carries a per-topic explanation, the core idea or definition, a concrete
+          example, the tools used, and a link to the matching interactive demo where one exists.</p>
 
         <!-- MODULE 0 -->
         <div class="module">
@@ -243,22 +322,34 @@
             <h3>Foundations &amp; framing</h3>
             <span class="span">Session 1</span>
           </div>
+          <div class="module-intro">
+            <p>Sets the mental model for the whole course: what low-code, no-code and AI actually are, why they matter
+              now, and how the term-long group project will work. The goal is shared vocabulary before any building
+              starts.</p>
+            <p class="oc-label">After this module you can</p>
+            <ul class="outcomes">
+              <li>Define low-code, no-code and the "citizen developer", and say when each fits.</li>
+              <li>Explain at a high level what AI is and why adoption is accelerating now.</li>
+              <li>Scope a realistic group project around a social problem.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess">
               <span class="num">01</span>
               <h4>Introduction</h4>
               <p class="sobj">Set the stage: what the course covers, how it is run, and the group project that runs through the term.</p>
               <ul class="topics">
-                <li>Overview of the course</li>
-                <li>Introduction to the program</li>
-                <li>Introduction to the group project</li>
-                <li>Introduction to no-code tools and platforms</li>
-                <li>Introduction to artificial intelligence (AI)</li>
+                <li><strong>Overview of the course</strong> — the arc from websites to apps, automation, data, chatbots and generative AI, and how each session builds on the last.</li>
+                <li><strong>Introduction to the program</strong> — how IE-IMPACT, the thematic topic areas and the assessment fit together.</li>
+                <li><strong>Introduction to the group project</strong> — teams pick a real societal problem and apply course technologies to it; intermediate deliverables feed the final presentation.</li>
+                <li><strong>Introduction to no-code tools and platforms</strong> — software built through visual interfaces instead of written code, letting non-programmers ship products.</li>
+                <li><strong>Introduction to artificial intelligence (AI)</strong> — systems that perform tasks normally needing human intelligence; the basis for later chatbot and generative-AI work.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> "Citizen developer" — a business user who builds working software on no-code/low-code platforms without formal programming training. Disruptive technologies tend to spread along an S-curve, slow at first then accelerating once adoption crosses a tipping point.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#scurve">demo · adoption S-curve</a>
                 <a class="tag demo-link" href="./index.html#network">demo · network effects</a>
-                <span class="tag read">Simon — Low-Code/No-Code</span>
+                <span class="tag read">Simon — Low-Code/No-Code (framing)</span>
               </div>
             </div>
           </div>
@@ -271,18 +362,31 @@
             <h3>Website creation</h3>
             <span class="span">Sessions 2–3</span>
           </div>
+          <div class="module-intro">
+            <p>The first hands-on block: building a real website with a no-code builder and applying the design and
+              content principles that make it usable and credible. Two sessions cover the same ground — the second is an
+              applied workshop to iterate on what you started.</p>
+            <p class="oc-label">After this module you can</p>
+            <ul class="outcomes">
+              <li>Build and publish a multi-page site on a no-code builder.</li>
+              <li>Apply layout, hierarchy and accessibility best practices.</li>
+              <li>Write clear, purpose-driven content with a consistent voice.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess">
               <span class="num">02</span>
               <h4>Website creation — builders &amp; best practices</h4>
               <p class="sobj">Get hands-on with no-code website builders and the principles of good web design.</p>
               <ul class="topics">
-                <li>Introduction to website builders</li>
-                <li>Best practices for website design and content creation</li>
+                <li><strong>Introduction to website builders</strong> — drag-and-drop platforms (Webflow, Wix, WordPress, Carrd) that turn visual blocks into a hosted, responsive site with no HTML/CSS written by hand.</li>
+                <li><strong>Best practices for website design and content creation</strong> — visual hierarchy, whitespace, responsive layout, fast load, accessible contrast, and a clear call to action above the fold.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> A website builder trades fine-grained control for speed. <b>Responsive design</b> means one layout adapts across phone, tablet and desktop — judged by whether a visitor finds what they need in seconds.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#nocode">demo · no-code builder</a>
-                <span class="tag read">Cabot — The Low-Code Handbook</span>
+                <span class="tag read">Cabot — The Low-Code Handbook (ch. on web)</span>
+                <span class="tag tool">Webflow / Wix / WordPress</span>
               </div>
             </div>
             <div class="sess">
@@ -290,12 +394,14 @@
               <h4>Website creation — applied workshop</h4>
               <p class="sobj">Continue building: apply design and content best practices to a working site.</p>
               <ul class="topics">
-                <li>Introduction to website builders</li>
-                <li>Best practices for website design and content creation</li>
+                <li><strong>Introduction to website builders</strong> — revisited in practice: structuring pages, navigation and reusable components on a live project.</li>
+                <li><strong>Best practices for website design and content creation</strong> — applied to your own site: refine hierarchy, copy, imagery and the conversion path, then publish.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> Iteration beats perfection — ship a rough version, test it on a real reader, and improve the weakest screen first. Content and design are evaluated together, not separately.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#nocode">demo · no-code builder</a>
-                <span class="tag read">Cabot — The Low-Code Handbook</span>
+                <span class="tag read">Cabot — The Low-Code Handbook (best practices)</span>
+                <span class="tag tool">Webflow / Wix / WordPress</span>
               </div>
             </div>
           </div>
@@ -308,20 +414,33 @@
             <h3>Web app &amp; mobile app creation</h3>
             <span class="span">Sessions 4–5</span>
           </div>
+          <div class="module-intro">
+            <p>Moves from static pages to <em>functional</em> products — apps with logic, data and user accounts —
+              built visually. You build a web app on one platform and a mobile app on another, then iterate in the
+              applied workshop.</p>
+            <p class="oc-label">After this module you can</p>
+            <ul class="outcomes">
+              <li>Distinguish a website from a web app from a native mobile app.</li>
+              <li>Build a data-driven web app in Bubble or Adalo and a mobile app in Thunkable or Glide.</li>
+              <li>Design app navigation and UX that match the platform's conventions.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess">
               <span class="num">04</span>
               <h4>Web &amp; mobile app builders</h4>
               <p class="sobj">Move beyond static sites: build functional apps visually on no-code platforms.</p>
               <ul class="topics">
-                <li>Introduction to web app builders</li>
-                <li>Creating a web app using <span class="mono">Bubble</span> or <span class="mono">Adalo</span></li>
-                <li>Creating a mobile app using <span class="mono">Thunkable</span> or <span class="mono">Glide</span></li>
-                <li>Best practices for web app and mobile app design and content creation</li>
+                <li><strong>Introduction to web app builders</strong> — platforms where you define data, logic and screens visually, producing software that <em>does</em> something rather than just displaying content.</li>
+                <li><strong>Creating a web app using <span class="mono">Bubble</span> or <span class="mono">Adalo</span></strong> — a workflow editor wires user actions to database operations; e.g. a sign-up form that creates a user record and emails a welcome.</li>
+                <li><strong>Creating a mobile app using <span class="mono">Thunkable</span> or <span class="mono">Glide</span></strong> — Glide turns a spreadsheet into a phone app in minutes; Thunkable builds cross-platform apps with blocks.</li>
+                <li><strong>Best practices for web app and mobile app design and content creation</strong> — clear navigation, minimal input friction, touch-friendly targets and fast perceived performance.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> A <b>web app</b> runs in the browser and updates data; a <b>mobile app</b> lives on the phone and can use device features. The data model — what records exist and how they relate — is the real backbone of any app.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#nocode">demo · no-code builder</a>
-                <span class="tag read">Cabot — The Low-Code Handbook</span>
+                <span class="tag read">Cabot — The Low-Code Handbook (apps)</span>
+                <span class="tag tool">Bubble / Adalo · Thunkable / Glide</span>
               </div>
             </div>
             <div class="sess">
@@ -329,14 +448,16 @@
               <h4>Web &amp; mobile app builders — applied workshop</h4>
               <p class="sobj">Deepen the build: iterate on app structure, data and UX on Bubble/Adalo and Thunkable/Glide.</p>
               <ul class="topics">
-                <li>Introduction to web app builders</li>
-                <li>Creating a web app using <span class="mono">Bubble</span> or <span class="mono">Adalo</span></li>
-                <li>Creating a mobile app using <span class="mono">Thunkable</span> or <span class="mono">Glide</span></li>
-                <li>Best practices for web app and mobile app design and content creation</li>
+                <li><strong>Introduction to web app builders</strong> — applied: refine the data schema and the logic workflows behind your screens.</li>
+                <li><strong>Creating a web app using <span class="mono">Bubble</span> or <span class="mono">Adalo</span></strong> — add conditional logic, repeating lists bound to data, and user roles.</li>
+                <li><strong>Creating a mobile app using <span class="mono">Thunkable</span> or <span class="mono">Glide</span></strong> — connect a live data source and test on a real device.</li>
+                <li><strong>Best practices for web app and mobile app design and content creation</strong> — reduce steps to value, handle empty and error states, and keep the UI consistent.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> Most app complexity hides in <b>state and edge cases</b> — what the screen shows when there is no data, a slow network, or a wrong input. Designing those states is what separates a demo from a usable product.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#nocode">demo · no-code builder</a>
-                <span class="tag read">Simon — Low-Code/No-Code</span>
+                <span class="tag read">Simon — Low-Code/No-Code (citizen dev)</span>
+                <span class="tag tool">Bubble / Adalo · Thunkable / Glide</span>
               </div>
             </div>
           </div>
@@ -349,17 +470,30 @@
             <h3>Automation &amp; RPA</h3>
             <span class="span">Sessions 6–7</span>
           </div>
+          <div class="module-intro">
+            <p>Connect the tools so work happens without a human in the loop. Session 6 covers cloud workflow
+              automation (app-to-app integrations); Session 7 covers RPA, where software bots imitate a person clicking
+              through legacy systems.</p>
+            <p class="oc-label">After this module you can</p>
+            <ul class="outcomes">
+              <li>Build a trigger-to-action workflow connecting two or more apps.</li>
+              <li>Explain how RPA differs from workflow automation and when each fits.</li>
+              <li>Judge automation ROI — which repetitive tasks are worth automating.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess">
               <span class="num">06</span>
               <h4>Automation — workflows</h4>
               <p class="sobj">Connect apps so a trigger fires actions automatically, without manual steps.</p>
               <ul class="topics">
-                <li>Automating workflows using <span class="mono">Zapier</span> or <span class="mono">Make</span></li>
+                <li><strong>Automating workflows using <span class="mono">Zapier</span> or <span class="mono">Make</span></strong> — a <em>trigger</em> in one app (e.g. a new form response) fires one or more <em>actions</em> in others (add a row, send an email, post to Slack), often with filters and data mapping in between.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> Automation = <b>trigger → (filter/transform) → action</b>. Zapier is the simplest linear model; Make exposes a visual graph for branching multi-step scenarios. The skill is decomposing a manual routine into these steps.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#flow">demo · automation pipeline</a>
-                <span class="tag read">Cabot — The Low-Code Handbook</span>
+                <span class="tag read">Cabot — The Low-Code Handbook (integration)</span>
+                <span class="tag tool">Zapier / Make</span>
               </div>
             </div>
             <div class="sess">
@@ -367,11 +501,13 @@
               <h4>Automation — robotic process automation (RPA)</h4>
               <p class="sobj">Replace repetitive, rule-based human tasks with software bots, and judge when it pays off.</p>
               <ul class="topics">
-                <li>Robotic process automation (RPA) using <span class="mono">UiPath</span> or <span class="mono">Automation Anywhere</span></li>
+                <li><strong>Robotic process automation (RPA) using <span class="mono">UiPath</span> or <span class="mono">Automation Anywhere</span></strong> — bots that mimic human clicks and keystrokes across applications (including ones with no API), automating high-volume, rule-based desk work like data entry or invoice processing.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> RPA automates the <b>user interface</b> rather than connecting back-end systems, so it works on legacy software but is brittle when screens change. ROI rises with task volume, repetitiveness and error cost — the demo lets you tune those to see the break-even.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#rpa">demo · RPA ROI</a>
                 <a class="tag demo-link" href="./index.html#flow">demo · automation pipeline</a>
+                <span class="tag tool">UiPath / Automation Anywhere</span>
               </div>
             </div>
           </div>
@@ -384,18 +520,30 @@
             <h3>Forms, payments &amp; databases</h3>
             <span class="span">Sessions 8–10</span>
           </div>
+          <div class="module-intro">
+            <p>The data layer that makes products real: collecting input (forms), taking money (payments) and storing
+              and querying everything (databases). These pieces plug straight into the automation flows from Module 3.</p>
+            <p class="oc-label">After this module you can</p>
+            <ul class="outcomes">
+              <li>Design forms that capture clean, structured data and feed a workflow.</li>
+              <li>Integrate a payment provider into a no-code product.</li>
+              <li>Model, create and query a no-code database as an app's source of truth.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess">
               <span class="num">08</span>
               <h4>Forms</h4>
               <p class="sobj">Capture structured input from users and feed it into automated workflows.</p>
               <ul class="topics">
-                <li>Creating forms using <span class="mono">Google Forms</span> or <span class="mono">Typeform</span></li>
-                <li>Best practices for automation, forms, and databases</li>
+                <li><strong>Creating forms using <span class="mono">Google Forms</span> or <span class="mono">Typeform</span></strong> — questionnaires that validate input and write each response to a sheet or database; Typeform favours one-question-at-a-time UX and higher completion.</li>
+                <li><strong>Best practices for automation, forms, and databases</strong> — ask only what you need, validate fields, and design the form as the <em>entry point</em> of an automated pipeline.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> A form is the front door to your data — clean structured input here prevents messy data everywhere downstream. <b>Field validation</b> enforces the right type/format at capture time.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#flow">demo · automation pipeline</a>
                 <a class="tag demo-link" href="./index.html#db">demo · no-code database</a>
+                <span class="tag tool">Google Forms / Typeform</span>
               </div>
             </div>
             <div class="sess">
@@ -403,12 +551,14 @@
               <h4>Payments</h4>
               <p class="sobj">Add payment capability to a no-code product and connect it to the rest of the stack.</p>
               <ul class="topics">
-                <li>Integrating payment systems using <span class="mono">Stripe</span> or <span class="mono">PayPal</span></li>
-                <li>Best practices for automation, payment, and databases</li>
+                <li><strong>Integrating payment systems using <span class="mono">Stripe</span> or <span class="mono">PayPal</span></strong> — a payment processor handles checkout, card data and compliance; a <em>webhook</em> then notifies your app when a payment succeeds so it can fulfil the order.</li>
+                <li><strong>Best practices for automation, payment, and databases</strong> — never store raw card data, reconcile payments to records, and automate receipts and access on success.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> You never handle the card yourself — the processor does, and signals your app via a <b>webhook</b>. Payment success is just another trigger that can fire downstream automation.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#db">demo · no-code database</a>
                 <a class="tag demo-link" href="./index.html#flow">demo · automation pipeline</a>
+                <span class="tag tool">Stripe / PayPal</span>
               </div>
             </div>
             <div class="sess">
@@ -416,12 +566,14 @@
               <h4>Databases</h4>
               <p class="sobj">Store, structure and query data as the backbone of any no-code application.</p>
               <ul class="topics">
-                <li>Introduction to databases</li>
-                <li>Creating and managing databases using <span class="mono">Airtable</span> or <span class="mono">Google Sheets</span></li>
-                <li>Best practices for automation, forms, payment, and databases</li>
+                <li><strong>Introduction to databases</strong> — organised collections of records in tables (rows = records, columns = fields), with relationships linking related tables instead of duplicating data.</li>
+                <li><strong>Creating and managing databases using <span class="mono">Airtable</span> or <span class="mono">Google Sheets</span></strong> — Airtable is a relational, spreadsheet-friendly database with linked records, views and filters; Sheets is simpler but flat.</li>
+                <li><strong>Best practices for automation, forms, payment, and databases</strong> — one source of truth, consistent field types, relationships over duplication, and views tailored to each use.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> A <b>relational</b> database links tables (e.g. orders → customers) so each fact is stored once. Good schema design — deciding the tables, fields and relationships up front — is what keeps an app maintainable as it grows.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#db">demo · no-code database</a>
+                <span class="tag tool">Airtable / Google Sheets</span>
               </div>
             </div>
           </div>
@@ -434,19 +586,31 @@
             <h3>Chatbots &amp; generative AI</h3>
             <span class="span">Sessions 11–12</span>
           </div>
+          <div class="module-intro">
+            <p>The AI block: first rule- and intent-based chatbots, then generative AI — models that create new text and
+              images. The course pairs how the models work with how to use them responsibly and acknowledge them.</p>
+            <p class="oc-label">After this module you can</p>
+            <ul class="outcomes">
+              <li>Design a chatbot that maps user intents to the right responses.</li>
+              <li>Explain at a high level how LLMs and diffusion models generate output.</li>
+              <li>Produce and critique generated images, and prompt effectively.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess">
               <span class="num">11</span>
               <h4>Chatbots</h4>
               <p class="sobj">Design conversational interfaces that route user messages to the right response.</p>
               <ul class="topics">
-                <li>Introduction to chatbots</li>
-                <li>Creating a chatbot using <span class="mono">ManyChat</span> or <span class="mono">Tars</span></li>
-                <li>Best practices for chatbot design and implementation</li>
+                <li><strong>Introduction to chatbots</strong> — conversational interfaces that interpret a user message and reply, ranging from fixed decision-tree flows to LLM-backed assistants.</li>
+                <li><strong>Creating a chatbot using <span class="mono">ManyChat</span> or <span class="mono">Tars</span></strong> — visual flow builders that map user <em>intents</em> to responses and actions across channels like web and messaging apps.</li>
+                <li><strong>Best practices for chatbot design and implementation</strong> — clear scope, graceful fallbacks for unrecognised input, a human-handoff path, and a consistent persona.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> An <b>intent</b> is what the user is trying to do; the bot's job is to classify the message into the right intent and respond. The demo shows how fuzzy phrasing still routes to the correct intent — and what happens when nothing matches.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#bot">demo · chatbot intent routing</a>
                 <span class="tag read">Dhamani &amp; Engler — Intro to Generative AI</span>
+                <span class="tag tool">ManyChat / Tars</span>
               </div>
             </div>
             <div class="sess">
@@ -454,14 +618,16 @@
               <h4>Generative AI — image generation</h4>
               <p class="sobj">Understand how generative models work and use them to produce original images.</p>
               <ul class="topics">
-                <li>Introduction to generative AI</li>
-                <li>Generating images using <span class="mono">Midjourney</span></li>
+                <li><strong>Introduction to generative AI</strong> — models trained on large datasets that generate new content; LLMs predict the next <em>token</em> of text, while image models learn the structure of images.</li>
+                <li><strong>Generating images using <span class="mono">Midjourney</span></strong> — a text-to-image <em>diffusion</em> model that starts from noise and iteratively denoises it toward an image matching the prompt; prompt wording, style and parameters steer the result.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> A <b>diffusion</b> model is trained to remove noise step by step, so it can turn pure noise into a coherent image guided by your prompt. LLMs work over <b>tokens</b> using <b>attention</b> to weigh which earlier words matter — all three demos make this visible.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#token">demo · tokenizer</a>
                 <a class="tag demo-link" href="./index.html#attn">demo · attention</a>
                 <a class="tag demo-link" href="./index.html#diffusion">demo · diffusion</a>
                 <span class="tag read">Marr — Generative AI in Practice</span>
+                <span class="tag tool">Midjourney</span>
               </div>
             </div>
           </div>
@@ -474,23 +640,36 @@
             <h3>Assessment &amp; project</h3>
             <span class="span">Sessions 13–15</span>
           </div>
+          <div class="module-intro">
+            <p>The course closes by consolidating everything: a closed-book test of the fundamentals, then team
+              presentations of the project that applied course technologies to a chosen social problem.</p>
+            <p class="oc-label">In this module you</p>
+            <ul class="outcomes">
+              <li>Demonstrate command of the full course content under exam conditions.</li>
+              <li>Present and defend a technology use case for a societal problem.</li>
+              <li>Give and receive structured peer review.</li>
+            </ul>
+          </div>
           <div class="timeline">
             <div class="sess exam">
               <span class="num">13</span>
               <h4>Closed-book examination <span class="pill">Test · 40%</span></h4>
               <p class="sobj">Comprehensive closed-book assessment: a quiz (20%) plus an open-ended case (20%).</p>
               <ul class="topics">
-                <li>Closed-book examination covering the full course content</li>
+                <li><strong>Closed-book quiz (20%)</strong> — recall and recognition across all six modules: definitions, tool fit, and best practices.</li>
+                <li><strong>Closed-book open-ended case (20%)</strong> — analyse a realistic scenario, choose appropriate technologies, and argue the trade-offs and societal implications.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> The case rewards <b>applied judgement</b> over memorisation — matching the right tool to a problem and reasoning about consequences, exactly the course's stated objective.</div>
             </div>
             <div class="sess proj">
               <span class="num">14–15</span>
               <h4>Project presentations <span class="pill">Group · 30%</span></h4>
               <p class="sobj">Teams present their final group project — applying course technologies to a chosen social problem — with peer review.</p>
               <ul class="topics">
-                <li>Project presentations</li>
-                <li>Final deliverable, presentation and peer review</li>
+                <li><strong>Project presentations</strong> — each team demonstrates its built artefacts (site, app, automation, data or chatbot) and the problem they address.</li>
+                <li><strong>Final deliverable, presentation and peer review</strong> — the final submission plus structured peer feedback; intermediate deliverables across the term also count toward the 30%.</li>
               </ul>
+              <div class="keyidea"><b>Key idea:</b> The project is the synthesis of the whole course — the grade reflects how well the chosen technologies actually fit the social problem, not how flashy the demo looks.</div>
               <div class="tags">
                 <a class="tag demo-link" href="./index.html#sdg">demo · impact prioritisation</a>
               </div>
@@ -499,28 +678,68 @@
         </div>
       </section>
 
+      <!-- KEY CONCEPTS GLOSSARY ----------------------------------------- -->
+      <section class="demo" id="concepts">
+        <h2>Key concepts — glossary</h2>
+        <p class="cap">The vocabulary that recurs across the program. Skim it before the exam; the closed-book quiz draws
+          on these definitions and the tools they name.</p>
+        <dl class="glossary">
+          <div class="gterm"><dt>No-code</dt><dd>Building software entirely through a visual interface, with no hand-written code, so non-programmers can ship products.</dd></div>
+          <div class="gterm"><dt>Low-code</dt><dd>Building software with mostly visual tools but the option to drop into code for the hard parts — a middle ground between no-code and traditional development.</dd></div>
+          <div class="gterm"><dt>Citizen developer</dt><dd>A business user who creates applications on no-code/low-code platforms without a formal software-engineering background.</dd></div>
+          <div class="gterm"><dt>Adoption S-curve</dt><dd>The typical shape of technology uptake over time: slow start, rapid middle growth, then saturation.</dd></div>
+          <div class="gterm"><dt>Network effect</dt><dd>When a product becomes more valuable as more people use it, accelerating adoption.</dd></div>
+          <div class="gterm"><dt>Website builder</dt><dd>A drag-and-drop platform (e.g. Webflow, Wix, WordPress) that produces a hosted, responsive site without coding.</dd></div>
+          <div class="gterm"><dt>Responsive design</dt><dd>One layout that adapts gracefully across phone, tablet and desktop screen sizes.</dd></div>
+          <div class="gterm"><dt>Web app vs. mobile app</dt><dd>A web app runs in the browser and manipulates data; a mobile app is installed on the device and can use its hardware features.</dd></div>
+          <div class="gterm"><dt>Data model / schema</dt><dd>The definition of what records an app stores, their fields and how tables relate — the backbone of any app.</dd></div>
+          <div class="gterm"><dt>UX (user experience)</dt><dd>How easily and pleasantly a person reaches their goal in a product, including empty, loading and error states.</dd></div>
+          <div class="gterm"><dt>Workflow automation</dt><dd>Connecting apps so a <span class="mono">trigger → filter → action</span> sequence runs without manual steps (Zapier, Make).</dd></div>
+          <div class="gterm"><dt>Trigger / action</dt><dd>The event that starts an automation (trigger) and the operation it then performs (action).</dd></div>
+          <div class="gterm"><dt>RPA</dt><dd>Robotic Process Automation — software bots that mimic human clicks and keystrokes to automate repetitive, rule-based tasks across UIs.</dd></div>
+          <div class="gterm"><dt>API</dt><dd>An application programming interface — a defined way for software systems to talk to each other directly (contrast with RPA, which drives the UI).</dd></div>
+          <div class="gterm"><dt>Webhook</dt><dd>An automatic message one service sends another when an event happens — e.g. a payment processor notifying your app of a successful payment.</dd></div>
+          <div class="gterm"><dt>Form validation</dt><dd>Enforcing the correct type and format of input at capture time so downstream data stays clean.</dd></div>
+          <div class="gterm"><dt>Payment processor</dt><dd>A service (Stripe, PayPal) that handles checkout, card data and compliance so you never store raw card details.</dd></div>
+          <div class="gterm"><dt>Relational database</dt><dd>Data stored in linked tables (rows = records, columns = fields) so each fact lives in one place (Airtable).</dd></div>
+          <div class="gterm"><dt>Chatbot</dt><dd>A conversational interface that interprets a user message and replies, from fixed flows to LLM-backed assistants.</dd></div>
+          <div class="gterm"><dt>Intent</dt><dd>What a user is trying to accomplish with a message; a chatbot classifies the message into an intent to respond correctly.</dd></div>
+          <div class="gterm"><dt>Generative AI</dt><dd>Models that produce new content — text, images, code — learned from large training datasets.</dd></div>
+          <div class="gterm"><dt>LLM</dt><dd>Large Language Model — a model that generates text by predicting the next token given the preceding ones.</dd></div>
+          <div class="gterm"><dt>Token</dt><dd>The unit of text an LLM reads and predicts — roughly a word-piece; the tokenizer splits text into tokens.</dd></div>
+          <div class="gterm"><dt>Attention</dt><dd>The mechanism letting a model weigh which earlier tokens matter most when generating the next one.</dd></div>
+          <div class="gterm"><dt>Diffusion model</dt><dd>An image generator trained to remove noise step by step, turning random noise into an image guided by a prompt (Midjourney).</dd></div>
+          <div class="gterm"><dt>Prompt engineering</dt><dd>Crafting and refining the input to a generative model to get useful, accurate output — minimum-effort prompts give weak results.</dd></div>
+        </dl>
+      </section>
+
       <!-- BIBLIOGRAPHY -------------------------------------------------- -->
       <section class="demo" id="biblio">
         <h2>Recommended bibliography</h2>
-        <p class="cap">Core readings spanning generative AI and the low-code / no-code movement.</p>
+        <p class="cap">Core readings spanning generative AI and the low-code / no-code movement. The tag on each entry
+          notes which sessions draw on it.</p>
         <ul class="biblio">
           <li>
             <span class="title">Introduction to Generative AI</span> — Dhamani, Numa &amp; Engler, Maggie (2024), Manning. <span class="mono">ISBN 9781633437197</span><br/>
-            <span class="meta">How LLMs work, integrating GenAI into workflows, balancing innovation and responsibility, and the social/legal/policy landscape. ·
-            <a href="https://www.manning.com/books/introduction-to-generative-ai" target="_blank">manning.com</a></span>
+            <span class="meta">How LLMs work, integrating GenAI into workflows, balancing innovation and responsibility, the social/legal/policy landscape and where AI is going — the conceptual backbone for the chatbot and generative-AI sessions and the GenAI policy. ·
+            <a href="https://www.manning.com/books/introduction-to-generative-ai" target="_blank">manning.com</a></span><br/>
+            <span class="used">used in · Sessions 11–12 · GenAI policy</span>
           </li>
           <li>
             <span class="title">Generative AI in Practice: 100+ Amazing Ways Generative AI is Changing Business</span> — Marr, Bernard (2024), Wiley. <span class="mono">ISBN 9781394245567</span><br/>
-            <span class="meta">Risks and challenges, the changing job market, and GenAI's impact across education, healthcare, retail, media, design, banking and law. ·
-            <a href="https://www.wiley.com/en-es/Generative+AI+in+Practice%3A+100%2B+Amazing+Ways+Generative+Artificial+Intelligence+is+Changing+Business+and+Society-p-9781394254248" target="_blank">wiley.com</a></span>
+            <span class="meta">Risks and challenges, the changing job market, and GenAI's impact across education, healthcare, retail, media, design, banking and law — the "so what" for applying generative AI to a societal problem in the project. ·
+            <a href="https://www.wiley.com/en-es/Generative+AI+in+Practice%3A+100%2B+Amazing+Ways+Generative+Artificial+Intelligence+is+Changing+Business+and+Society-p-9781394254248" target="_blank">wiley.com</a></span><br/>
+            <span class="used">used in · Session 12 · group project</span>
           </li>
           <li>
             <span class="title">The Low-Code Handbook</span> — Cabot, Jordi (2024), Kindle. <span class="mono">ISBN 9789998778504</span><br/>
-            <span class="meta">A practical guide to the low-code landscape. · <a href="https://lowcode-book.com/" target="_blank">lowcode-book.com</a></span>
+            <span class="meta">A practical guide to the low-code landscape: platforms, integration and best practices — the reference for the building modules on websites, apps, automation and data. · <a href="https://lowcode-book.com/" target="_blank">lowcode-book.com</a></span><br/>
+            <span class="used">used in · Sessions 2–10</span>
           </li>
           <li>
             <span class="title">Low-Code/No-Code: Citizen Developers and the Surprising Future of Business Applications</span> — Simon, Phil (2022), Racket Publishing. <span class="mono">ISBN 9798985814736</span><br/>
-            <span class="meta">The rise of citizen developers and the future of business applications. · <a href="https://www.philsimon.com/books/low-code-no-code/" target="_blank">philsimon.com</a></span>
+            <span class="meta">The rise of citizen developers and the future of business applications — the framing read for why no-code matters and who builds with it. · <a href="https://www.philsimon.com/books/low-code-no-code/" target="_blank">philsimon.com</a></span><br/>
+            <span class="used">used in · Session 1 · Sessions 4–5</span>
           </li>
         </ul>
       </section>
