@@ -154,6 +154,26 @@
       .biblio .title { color: var(--ink); font-weight: 600; }
       .biblio .meta { color: var(--muted); font-size: 0.78rem; }
       .biblio .used { color: var(--accent); font-family: var(--font-mono); font-size: 0.74rem; }
+
+      /* worked examples */
+      .wex { margin-top: 0.9rem; border: 1px solid var(--rule); border-radius: 8px; padding: 0.7rem 0.85rem; background: var(--bg); }
+      .wex:first-of-type { margin-top: 0.5rem; }
+      .wex .wtitle { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; font-size: 0.92rem; font-weight: 700; color: var(--ink); }
+      .wex .wtag { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--accent); background: var(--accent-soft); padding: 0.12em 0.5em; border-radius: 4px; }
+      .wex .wprob { font-size: 0.84rem; color: var(--ink-soft); margin: 0.45rem 0 0; }
+      .wex .wprob code, .wtrace code, .wex .wnote code, .wtable code { font-family: var(--font-mono); font-size: 0.92em; color: var(--accent); }
+      .wtrace { list-style: none; margin: 0.55rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; counter-reset: step; }
+      .wtrace li { position: relative; padding-left: 1.7rem; font-size: 0.82rem; color: var(--ink-soft); line-height: 1.45; }
+      .wtrace li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0.05rem; width: 1.15rem; text-align: center; font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); color: var(--accent); background: var(--accent-soft); border-radius: 4px; }
+      .wtrace li b { color: var(--ink); }
+      .wex .wnote { margin-top: 0.55rem; font-size: 0.8rem; color: var(--ink-soft); }
+      .wex .wnote b { color: var(--ink); }
+      .wtable-wrap { overflow-x: auto; }
+      .wtable { width: 100%; border-collapse: collapse; margin-top: 0.55rem; font-size: 0.78rem; }
+      .wtable th, .wtable td { border: 1px solid var(--rule); padding: 0.32em 0.55em; text-align: left; vertical-align: top; }
+      .wtable th { background: var(--paper); color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.68rem; }
+      .wtable td code, .wtable .mono { font-family: var(--font-mono); font-size: 0.92em; color: var(--accent); }
+      .wtable td.hot { color: var(--accent); font-weight: 700; }
     </style>
   </head>
   <body>
@@ -169,6 +189,7 @@
         <a href="#objectives">objectives</a>
         <a href="#assessment">assessment</a>
         <a href="#program">program</a>
+        <a href="#examples">worked examples</a>
         <a href="#concepts">key concepts</a>
         <a href="#biblio">bibliography</a>
         <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
@@ -676,6 +697,132 @@
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- WORKED EXAMPLES ----------------------------------------------- -->
+      <section class="demo" id="examples">
+        <h2>Worked examples</h2>
+        <p class="cap">The program describes the tools in prose; these are concrete, traced-through walkthroughs of the
+          patterns you actually build — an automation, a prompt, a data schema, a chatbot turn and a checkout. Tool names
+          and any figures are illustrative of how each platform behaves, not quotes from a specific account.</p>
+
+        <!-- 1. Automation flow -->
+        <div class="wex">
+          <div class="wtitle"><span class="wtag">automation</span> A no-code automation, traced end to end</div>
+          <p class="wprob">In <code>Zapier</code> or <code>Make</code>, a workflow is a <b>trigger</b> followed by <b>filters</b>
+            and <b>actions</b>. Goal: when a lead fills the contact form, log qualified leads to a database and ping the
+            sales channel — but only if their stated budget reaches €100. Watch one real submission flow through:</p>
+          <ol class="wtrace">
+            <li><b>Trigger</b> — <code>Typeform</code> "New entry": <code>{ name: "Lucía", email: "lucia@…", budget: 250 }</code> arrives.</li>
+            <li><b>Filter</b> — continue only if <code>budget ≥ 100</code>. 250 ≥ 100 → passes. (A €40 lead would stop here, silently.)</li>
+            <li><b>Action 1</b> — <code>Airtable</code> "Create record": a new row is added with name, email and budget, mapped field-by-field.</li>
+            <li><b>Action 2</b> — <code>Slack</code> "Send message" to #sales: <i>"New qualified lead: Lucía — €250."</i></li>
+          </ol>
+          <p class="wnote"><b>The mental model:</b> data flows left to right, each step receiving the previous step's output. The
+            value of no-code automation is removing the human copy-paste between apps — but the <i>filter</i> is what keeps it
+            from flooding the team with noise. Designing the conditions is the real work; wiring the apps is the easy part.</p>
+        </div>
+
+        <!-- 2. Prompt engineering -->
+        <div class="wex">
+          <div class="wtitle"><span class="wtag">generative AI</span> Why a structured prompt beats a vague one</div>
+          <p class="wprob">The syllabus is blunt: <i>"minimum-effort prompts get low-quality results."</i> Same task — draft a
+            launch announcement — asked two ways:</p>
+          <div class="wtable-wrap">
+          <table class="wtable">
+            <thead><tr><th style="width:14%">Part</th><th style="width:43%">Vague prompt</th><th style="width:43%">Structured prompt</th></tr></thead>
+            <tbody>
+              <tr><td><b>Role</b></td><td>—</td><td>"You are a B2B copywriter."</td></tr>
+              <tr><td><b>Context</b></td><td>—</td><td>"We're a 5-person startup launching a no-code analytics add-on for Airtable."</td></tr>
+              <tr><td><b>Task</b></td><td>"Write about our launch."</td><td>"Write a launch announcement for our existing newsletter subscribers."</td></tr>
+              <tr><td><b>Constraints</b></td><td>—</td><td>"Under 120 words, one clear call-to-action, no hype words like 'revolutionary'."</td></tr>
+              <tr><td><b>Format</b></td><td>—</td><td>"Subject line + 2 short paragraphs + a button label."</td></tr>
+              <tr><td><b>Result</b></td><td>Generic, off-length, needs a full rewrite.</td><td class="hot">On-brand, on-length, usable with light edits.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <p class="wnote"><b>Role + context + task + constraints + format</b> turns an open question into a specification. Still,
+            the course's rule holds: <b>assume the output is wrong until you verify it</b> — check the facts, the tone and the
+            length yourself, and acknowledge the AI's use. The prompt gets you a strong draft, not a finished, trustworthy one.</p>
+        </div>
+
+        <!-- 3. Form -> database schema -->
+        <div class="wex">
+          <div class="wtitle"><span class="wtag">forms · databases</span> Turning a form into a database table</div>
+          <p class="wprob">A <code>Google Form</code> / <code>Typeform</code> collects answers; a <code>Airtable</code> base
+            stores them. Each form question becomes a <b>column</b> with a deliberate <b>type</b> — picking the type is what
+            makes the data filterable and chartable later. One event-signup form maps like this:</p>
+          <div class="wtable-wrap">
+          <table class="wtable">
+            <thead><tr><th>Form question</th><th>Column</th><th>Type</th><th>Example value</th></tr></thead>
+            <tbody>
+              <tr><td>"Your full name"</td><td><span class="mono">name</span></td><td>Single line text</td><td>Lucía Pérez</td></tr>
+              <tr><td>"Email"</td><td><span class="mono">email</span></td><td>Email</td><td>lucia@example.com</td></tr>
+              <tr><td>"How many seats?"</td><td><span class="mono">seats</span></td><td>Number (integer)</td><td>2</td></tr>
+              <tr><td>"Workshop track"</td><td><span class="mono">track</span></td><td>Single select</td><td>No-code apps</td></tr>
+              <tr><td>"Dietary needs"</td><td><span class="mono">diet</span></td><td>Long text</td><td>Vegetarian</td></tr>
+              <tr><td>(automatic)</td><td><span class="mono">created</span></td><td>Created time</td><td>2025-10-03 14:21</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <p class="wnote"><b>Why types matter:</b> storing <span class="mono">seats</span> as a number (not text) lets you sum
+            total attendance and filter "more than 1 seat"; a <i>single select</i> for <span class="mono">track</span> keeps the
+            options clean for grouping. Garbage typing here is what makes a dataset impossible to report on later — the schema is a
+            design decision, not an afterthought.</p>
+        </div>
+
+        <!-- 4. Automation ROI -->
+        <div class="wex">
+          <div class="wtitle"><span class="wtag">impact</span> Is this worth automating? (an illustrative estimate)</div>
+          <p class="wprob">Automation has a cost to build, so it pays off only above some volume. A simple back-of-envelope for the
+            lead-logging task above, with <b>illustrative</b> numbers:</p>
+          <ol class="wtrace">
+            <li>Manual way: open each form response, copy 4 fields into the sheet, message sales — about <b>6 min</b> each.</li>
+            <li>Volume: roughly <b>40</b> responses per week.</li>
+            <li>Manual time = 40 × 6 min = <b>240 min/week = 4 h/week</b> ≈ <b>17 h/month</b>.</li>
+            <li>Build the Zap once: about <b>2 h</b>. It then runs in seconds per response, essentially unattended.</li>
+            <li>Payback: the build pays for itself in well under the first week; everything after is saved time.</li>
+          </ol>
+          <p class="wnote"><b>The judgement call:</b> at 40/week the automation is clearly worth it; at 2/week it probably is
+            not — you'd spend longer building and maintaining it than doing the task by hand. "Should we automate this?" is a
+            volume-and-stability question, and these figures are illustrative of how to reason about it, not a benchmark.</p>
+        </div>
+
+        <!-- 5. Chatbot intent / entities -->
+        <div class="wex">
+          <div class="wtitle"><span class="wtag">chatbots</span> How a chatbot reads one message</div>
+          <p class="wprob">No-code chatbot builders (<code>ManyChat</code>, <code>Tars</code>) work by matching a user message to an
+            <b>intent</b> (what they want) and extracting <b>entities</b> (the details), then <b>filling slots</b> until they have
+            enough to act. User says: <i>"Can I book a table for 4 this Friday at 8pm?"</i></p>
+          <ol class="wtrace">
+            <li><b>Intent</b> → <code>book_reservation</code> (matched from "book a table").</li>
+            <li><b>Entities</b> → party_size = <code>4</code> · day = <code>Friday</code> · time = <code>20:00</code>.</li>
+            <li><b>Slots required</b> → party_size ✓, date ✓, time ✓ … but <code>name</code> is still empty.</li>
+            <li><b>Follow-up</b> → the bot asks only the missing slot: <i>"Great — what name should I put the table under?"</i></li>
+            <li><b>Hand-off</b> → once all slots are full, it triggers an action (write to the bookings database, or escalate to a human).</li>
+          </ol>
+          <p class="wnote"><b>Design takeaway:</b> a good bot doesn't re-ask what it already understood — it tracks which slots are
+            filled and asks for the rest. The hard part is the <i>fallback</i>: deciding what happens when the intent isn't
+            recognised, so users aren't trapped in a loop. Scripting those dead-ends is most of chatbot design.</p>
+        </div>
+
+        <!-- 6. Payments / Stripe -->
+        <div class="wex">
+          <div class="wtitle"><span class="wtag">payments</span> A no-code checkout, and where the card data goes</div>
+          <p class="wprob">Integrating <code>Stripe</code> / <code>PayPal</code> into a no-code site means you never handle the
+            card yourself — the payment happens on the provider's hosted page, and your app reacts to a confirmation. A €29
+            purchase flows like this:</p>
+          <ol class="wtrace">
+            <li>Customer clicks <b>Buy (€29)</b> on your Bubble/Webflow page.</li>
+            <li>The app opens a <code>Stripe Checkout</code> session and redirects to Stripe's hosted page.</li>
+            <li>The customer types their card details <b>on Stripe's page</b> — those details never touch your site or database.</li>
+            <li>Stripe confirms the charge and fires a <code>checkout.session.completed</code> webhook back to your automation.</li>
+            <li>Your automation marks the order <b>paid</b>, saves the receipt, and emails the customer a confirmation.</li>
+          </ol>
+          <p class="wnote"><b>Why it's built this way:</b> keeping card entry on the provider's page means the sensitive data
+            (and the PCI-compliance burden) stays with Stripe, not you — a core reason no-code commerce is safe to build. Your job
+            is to react to the <i>webhook</i>, not to process the payment. Test in the provider's sandbox before going live.</p>
         </div>
       </section>
 
