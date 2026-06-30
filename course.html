@@ -174,6 +174,24 @@
       .wtable th { background: var(--paper); color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.68rem; }
       .wtable td code, .wtable .mono { font-family: var(--font-mono); font-size: 0.92em; color: var(--accent); }
       .wtable td.hot { color: var(--accent); font-weight: 700; }
+
+      /* practice problems */
+      .pp { margin-top: 0.8rem; border: 1px solid var(--rule); border-radius: 8px; padding: 0.7rem 0.85rem; background: var(--bg); }
+      .pp:first-of-type { margin-top: 0.5rem; }
+      .pp .ppq { font-size: 0.86rem; color: var(--ink); line-height: 1.5; }
+      .pp .ppq .qn { font-family: var(--font-mono); font-weight: 700; color: var(--accent); margin-right: 0.4rem; }
+      .pp .pptag { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); border: 1px solid var(--rule-h); border-radius: 4px; padding: 0.08em 0.4em; margin-left: 0.4rem; white-space: nowrap; }
+      .pp .ppq code, .ppsol code { font-family: var(--font-mono); font-size: 0.92em; color: var(--accent); }
+      .ppsol { margin-top: 0.5rem; border-top: 1px dotted var(--rule); padding-top: 0.45rem; }
+      .ppsol > summary { cursor: pointer; font-size: 0.78rem; font-weight: 600; color: var(--accent); list-style: none; display: inline-flex; align-items: center; gap: 0.35rem; }
+      .ppsol > summary::-webkit-details-marker { display: none; }
+      .ppsol > summary::before { content: '▸'; font-size: 0.72rem; transition: transform 0.15s ease; }
+      .ppsol[open] > summary::before { transform: rotate(90deg); }
+      .ppsol > summary:hover { text-decoration: underline; }
+      .ppsol .sol { margin-top: 0.45rem; font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5; }
+      .ppsol .sol b { color: var(--ink); }
+      .ppsol .ans { margin-top: 0.45rem; padding: 0.4rem 0.6rem; border-left: 2px solid var(--accent); background: var(--accent-soft); border-radius: 0 5px 5px 0; font-size: 0.82rem; color: var(--ink-soft); }
+      .ppsol .ans b { color: var(--ink); }
     </style>
   </head>
   <body>
@@ -190,6 +208,7 @@
         <a href="#assessment">assessment</a>
         <a href="#program">program</a>
         <a href="#examples">worked examples</a>
+        <a href="#practice">practice</a>
         <a href="#concepts">key concepts</a>
         <a href="#biblio">bibliography</a>
         <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
@@ -823,6 +842,142 @@
           <p class="wnote"><b>Why it's built this way:</b> keeping card entry on the provider's page means the sensitive data
             (and the PCI-compliance burden) stays with Stripe, not you — a core reason no-code commerce is safe to build. Your job
             is to react to the <i>webhook</i>, not to process the payment. Test in the provider's sandbox before going live.</p>
+        </div>
+      </section>
+
+      <!-- PRACTICE PROBLEMS --------------------------------------------- -->
+      <section class="demo" id="practice">
+        <h2>Practice problems</h2>
+        <p class="cap">Exam-style questions to rehearse the closed-book quiz and open-ended case. Each one is conceptual or
+          applied — no maths — and each carries a full worked solution you can reveal. Where a figure appears it is an
+          illustrative estimate, not a benchmark; the goal is the reasoning, not the number.</p>
+
+        <!-- Q1 — choose the right tool -->
+        <div class="pp">
+          <div class="ppq"><span class="qn">Q1</span>A small NGO wants a public page describing its work plus a private area where
+            staff can log site visits, see a list of past visits and edit them. They have no developers and two weeks. Would you
+            reach for a <code>website builder</code> (Webflow/Wix), a <code>web-app builder</code> (Bubble/Adalo), or
+            <code>workflow automation</code> (Zapier/Make) — and why? <span class="pptag">choose the tool</span></div>
+          <details class="ppsol">
+            <summary>Show solution</summary>
+            <div class="sol">Separate the two needs. The public page is <b>content</b> — text and images that mostly display, do not
+              change per user and need no login. A <code>website builder</code> ships that fastest with the best design control. The
+              private area is <b>functional</b>: it stores records (visits), lists them, and lets staff create and edit them behind a
+              login — that is data + logic + user accounts, which is exactly what a <code>web-app builder</code> like Bubble or Adalo
+              provides and what a website builder cannot do well. <code>Workflow automation</code> is the wrong category here: Zapier/Make
+              <i>connect</i> existing apps when an event fires; they are not where you build screens or a CRUD interface. The honest answer
+              is usually <b>both builders</b>, not one tool — a marketing site plus a small web app — with automation added later only if
+              you need to, say, email a summary when a visit is logged.</div>
+            <div class="ans"><b>Answer:</b> Website builder for the public page, web-app builder for the staff CRUD area; automation
+              is not a substitute for either. Match the tool to whether the surface <i>displays content</i> or <i>manipulates data behind a login</i>.</div>
+          </details>
+        </div>
+
+        <!-- Q2 — automation design / critique -->
+        <div class="pp">
+          <div class="ppq"><span class="qn">Q2</span>A volunteer co-ordinator wants this <code>Zapier</code> Zap: <i>trigger</i> on every
+            new <code>Typeform</code> sign-up, <i>action</i> = post the person's name to the team <code>Slack</code> channel. After a busy
+            week the channel is unusable noise and a duplicate sign-up was messaged twice. Critique the design and propose a better
+            <code>trigger → filter → action</code> flow. <span class="pptag">automation design</span></div>
+          <details class="ppsol">
+            <summary>Show solution</summary>
+            <div class="sol">The flow has no <b>filter</b> and no <b>de-duplication</b>, so every raw event becomes a message — that is why
+              volume turns into noise. Two fixes. (1) Add a <b>filter step</b> between trigger and action so only sign-ups that matter get
+              through — e.g. only those who ticked "available this weekend", so the channel sees signal not every row. (2) Handle
+              <b>duplicates</b>: either look up the email in the database first and continue only if it is new, or batch sign-ups into a
+              single daily digest instead of one message each. A more robust shape is <code>trigger</code> (new entry) →
+              <code>filter</code> (relevant + not already seen) → <code>action 1</code> (create/lookup a record so there is a source of
+              truth) → <code>action 2</code> (one tidy Slack message, or a scheduled digest). The lesson from the worked example holds:
+              wiring the apps is easy; <b>designing the condition that decides what is worth an action</b> is the real work.</div>
+            <div class="ans"><b>Answer:</b> Insert a filter (relevance + de-dup) before the action, and consider batching into a digest.
+              An automation without a filter just relays noise faster than a human would.</div>
+          </details>
+        </div>
+
+        <!-- Q3 — data modelling -->
+        <div class="pp">
+          <div class="ppq"><span class="qn">Q3</span>A <code>Google Form</code> for an event collects: full name, email, "how many
+            seats?", a workshop track chosen from three fixed options, and free-text dietary needs. You will store responses in
+            <code>Airtable</code> and later want to <i>sum total attendance</i> and <i>group by track</i>. What column and <b>type</b>
+            should each field map to, and why does the type matter? <span class="pptag">data modelling</span></div>
+          <details class="ppsol">
+            <summary>Show solution</summary>
+            <div class="sol">Map each question to a column with a deliberate type: <code>name</code> → <i>single-line text</i>;
+              <code>email</code> → <i>email</i> (so the format is validated and it is usable for later automation); <code>seats</code> →
+              <i>number / integer</i>; <code>track</code> → <i>single select</i> with the three fixed options; <code>diet</code> →
+              <i>long text</i> (open-ended, not summarised). The type is not cosmetic — it determines what you can compute. Storing
+              <code>seats</code> as a <b>number</b> is what lets you <i>sum</i> total attendance and filter "more than one seat"; if it were
+              text, "2" + "3" would not add up. Making <code>track</code> a <b>single select</b> (rather than free text) keeps the option
+              values clean and identical, so <i>group by track</i> produces three tidy buckets instead of "No-code", "no code", "nocode" as
+              separate groups. Choosing types up front is a schema design decision; fixing dirty types after data has arrived is far harder.</div>
+            <div class="ans"><b>Answer:</b> number for seats (to sum), single-select for track (to group cleanly), email/text/long-text
+              for the rest. The type chosen at capture time decides what analysis is possible later.</div>
+          </details>
+        </div>
+
+        <!-- Q4 — chatbot design / fallback -->
+        <div class="pp">
+          <div class="ppq"><span class="qn">Q4</span>You are building a <code>ManyChat</code> support bot for a community clinic. A user
+            types <i>"is the place open on the holiday monday?"</i> and the bot has no matching <code>intent</code>. What should happen, and
+            why is designing this <code>fallback</code> often more important than adding more intents? <span class="pptag">chatbot design</span></div>
+          <details class="ppsol">
+            <summary>Show solution</summary>
+            <div class="sol">When classification fails, the bot must <b>not</b> loop, guess, or dead-end the user. A good fallback does three
+              things: (1) <b>acknowledge</b> it did not understand rather than pretending — e.g. "I'm not sure I caught that"; (2) offer a
+              <b>way forward</b> — restate the few things it <i>can</i> help with (hours, location, booking) as quick-reply buttons so the
+              user can re-route; and (3) provide a <b>human-handoff path</b> for anything outside scope, so a real question about holiday
+              hours reaches a person instead of failing silently. This matters more than chasing intent coverage because you can never
+              enumerate every phrasing a user will type — the long tail is effectively infinite. A bot is judged on how gracefully it
+              behaves <i>when it doesn't know</i>, not on how many intents it lists. As the syllabus puts it, a clear scope plus a graceful
+              fallback and handoff is the best practice; over-promising coverage is the failure mode.</div>
+            <div class="ans"><b>Answer:</b> Acknowledge the miss, re-offer the bot's real capabilities, and give a human-handoff route —
+              never loop or fake an answer. Fallback design beats intent count because user phrasing is unbounded.</div>
+          </details>
+        </div>
+
+        <!-- Q5 — payments / security -->
+        <div class="pp">
+          <div class="ppq"><span class="qn">Q5</span>A teammate proposes adding a custom card form to your <code>Bubble</code> page and
+            saving the card number in <code>Airtable</code> "so we have it on file", instead of redirecting to <code>Stripe</code>'s hosted
+            checkout. Explain why card entry should stay on the provider's page, and what role the <code>webhook</code> plays in the
+            no-code checkout. <span class="pptag">payments · security</span></div>
+          <details class="ppsol">
+            <summary>Show solution</summary>
+            <div class="sol">Storing raw card numbers is the thing you most want to avoid. Card data carries a heavy compliance and liability
+              burden (PCI-DSS); the entire point of <code>Stripe Checkout</code> / PayPal is that the customer types their card <b>on the
+              provider's hosted page</b>, so the sensitive details never touch your site, your database or your no-code platform — and the
+              compliance obligation stays with the provider, not a two-person team. Saving the number in Airtable would make your base a
+              target and put that burden on you, for no benefit. The flow instead is: your app opens a checkout session and <b>redirects</b>;
+              the customer pays on the provider's page; the provider charges the card and then fires a <code>webhook</code> — an automatic
+              "this happened" message (e.g. <code>checkout.session.completed</code>) — back to your app. That webhook is the trusted signal
+              that lets your automation mark the order paid, save a <i>receipt</i> (not the card), and email the customer. Your job is to
+              <b>react to the confirmation</b>, never to handle the card.</div>
+            <div class="ans"><b>Answer:</b> Keep card entry on the provider's hosted page so sensitive data and PCI burden stay with them;
+              the webhook is the provider's signal that payment succeeded, which triggers your fulfilment. Never store raw card numbers.</div>
+          </details>
+        </div>
+
+        <!-- Q6 — critical GenAI use -->
+        <div class="pp">
+          <div class="ppq"><span class="qn">Q6</span>For your group project you ask an LLM to "list the three most effective no-code
+            tools for refugee-aid logistics, with statistics". It returns a confident answer with specific percentages and a cited study.
+            Per this course's GenAI policy, is using this directly appropriate? How should you verify and acknowledge it?
+            <span class="pptag">critical GenAI use</span></div>
+          <details class="ppsol">
+            <summary>Show solution</summary>
+            <div class="sol">Using the output <i>directly</i> is not appropriate — but using the model is. The course explicitly encourages
+              GenAI to build a critical perspective, while setting two rules that this scenario triggers. First, <b>assume the output is
+              wrong until verified</b>: confident percentages and a named study are exactly where models <i>hallucinate</i>, inventing
+              plausible-looking figures and citations that do not exist. So you must independently confirm each statistic and check the cited
+              study actually says it — if you cannot find and verify the source, you drop the claim; you own any error that ships. Second, a
+              <b>minimum-effort prompt gives a low-quality result</b>; "list three tools with statistics" invites fabrication, whereas asking
+              for candidate tools <i>and</i> where to verify each pushes the model toward checkable leads. Third, you must <b>acknowledge</b>
+              the use: state which system you used, the prompts, and how the output was used (e.g. "used to brainstorm candidate tools, all
+              figures independently verified"). Acknowledging does not lower your grade; failing to is an academic-honesty violation.</div>
+            <div class="ans"><b>Answer:</b> Appropriate as a brainstorming starting point, not as a citable source — verify every figure
+              and citation against real sources before use, and disclose the system, prompts and how you used it. Treat unverified GenAI
+              statistics as wrong by default.</div>
+          </details>
         </div>
       </section>
 
