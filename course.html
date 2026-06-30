@@ -192,6 +192,31 @@
       .ppsol .sol b { color: var(--ink); }
       .ppsol .ans { margin-top: 0.45rem; padding: 0.4rem 0.6rem; border-left: 2px solid var(--accent); background: var(--accent-soft); border-radius: 0 5px 5px 0; font-size: 0.82rem; color: var(--ink-soft); }
       .ppsol .ans b { color: var(--ink); }
+
+      /* self-check quiz */
+      .quiz { margin-top: 0.5rem; }
+      .quiz .q { border: 1px solid var(--rule); border-radius: 8px; padding: 0.7rem 0.85rem; margin-top: 0.8rem; background: var(--bg); }
+      .quiz .q:first-of-type { margin-top: 0.3rem; }
+      .quiz .qtext { font-size: 0.86rem; color: var(--ink); margin: 0 0 0.5rem; line-height: 1.5; }
+      .quiz .qtext .qn { font-family: var(--font-mono); font-weight: 700; color: var(--accent); margin-right: 0.3rem; }
+      .quiz .qtext code, .quiz .opt code, .quiz .explain code { font-family: var(--font-mono); font-size: 0.92em; color: var(--accent); }
+      .quiz .opts { display: flex; flex-direction: column; gap: 0.3rem; }
+      .quiz .opt { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.32rem 0.5rem; border: 1px solid transparent; border-radius: 6px; font-size: 0.83rem; color: var(--ink-soft); cursor: pointer; }
+      .quiz .opt:hover { background: var(--accent-soft); }
+      .quiz .opt input { margin-top: 0.15rem; accent-color: var(--accent); }
+      .quiz .opt.correct { border-color: var(--good, #16A34A); background: color-mix(in srgb, var(--good, #16A34A) 13%, transparent); color: var(--ink); font-weight: 600; }
+      .quiz .opt.wrong { border-color: var(--bad, #DC2626); background: color-mix(in srgb, var(--bad, #DC2626) 10%, transparent); }
+      .quiz .explain { margin: 0.5rem 0 0; padding: 0.4rem 0.6rem; font-size: 0.8rem; color: var(--ink-soft); border-left: 2px solid var(--accent); background: var(--accent-soft); border-radius: 0 5px 5px 0; display: none; }
+      .quiz .explain.show { display: block; }
+      .quiz .explain b { color: var(--ink); }
+      .quiz-actions { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.9rem; flex-wrap: wrap; }
+      .qbtn { font-family: var(--font-mono); font-size: 0.76rem; font-weight: 600; padding: 0.42em 0.95em; border-radius: 6px; cursor: pointer; border: 1px solid var(--accent); }
+      .qbtn.check { background: var(--accent); color: var(--paper); }
+      .qbtn.check:hover { filter: brightness(1.08); }
+      .qbtn.reset { background: transparent; color: var(--accent); }
+      .qbtn.reset:hover { background: var(--accent-soft); }
+      .quiz .score { font-family: var(--font-mono); font-weight: 700; font-size: 0.88rem; color: var(--accent); }
+      .quiz .score[hidden] { display: none; }
     </style>
   </head>
   <body>
@@ -209,6 +234,7 @@
         <a href="#program">program</a>
         <a href="#examples">worked examples</a>
         <a href="#practice">practice</a>
+        <a href="#quiz">self-check</a>
         <a href="#concepts">key concepts</a>
         <a href="#biblio">bibliography</a>
         <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
@@ -979,6 +1005,141 @@
               statistics as wrong by default.</div>
           </details>
         </div>
+      </section>
+
+      <!-- QUICK SELF-CHECK QUIZ ----------------------------------------- -->
+      <section class="demo" id="quiz">
+        <h2>Quick self-check</h2>
+        <p class="cap">Eight one-mark questions to test recall under exam conditions. Pick an answer for each, then <b>Check answers</b> for instant scoring and a one-line explanation of every question.</p>
+        <form class="quiz">
+          <div class="q" data-answer="c">
+            <p class="qtext"><span class="qn">1.</span> What distinguishes <b>no-code</b> from <b>low-code</b>?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q1" value="a"><span>No-code is faster, but the two are otherwise identical in capability</span></label>
+              <label class="opt"><input type="radio" name="q1" value="b"><span>Low-code requires no programming at all; no-code still needs some code</span></label>
+              <label class="opt"><input type="radio" name="q1" value="c"><span>No-code builds entirely through a visual interface; low-code is mostly visual but lets you drop into code for the hard parts</span></label>
+              <label class="opt"><input type="radio" name="q1" value="d"><span>They differ only in price, not in how software is built</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> No-code removes hand-written code entirely behind a visual interface; low-code is the middle ground where you can drop into code when needed.</p>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p class="qtext"><span class="qn">2.</span> A <b>website builder</b> (e.g. <code>Webflow</code>, <code>Wix</code>) is primarily for, versus a <b>web-app builder</b> (e.g. <code>Bubble</code>, <code>Adalo</code>)?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q2" value="a"><span>Both are for the same thing; the names are interchangeable</span></label>
+              <label class="opt"><input type="radio" name="q2" value="b"><span>A website builder produces a site that mainly displays content; a web-app builder produces software with data and logic that <i>does</i> something</span></label>
+              <label class="opt"><input type="radio" name="q2" value="c"><span>A website builder is for mobile apps; a web-app builder is for desktop only</span></label>
+              <label class="opt"><input type="radio" name="q2" value="d"><span>A website builder needs code; a web-app builder does not</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> Website builders make sites that mostly present content; web-app builders define data, logic and screens so the product performs actions, not just displays.</p>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p class="qtext"><span class="qn">3.</span> In a <code>Zapier</code> or <code>Make</code> automation, the <b>trigger</b> and <b>action</b> are?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q3" value="a"><span>The trigger is the event that starts the automation; the action is the operation it then performs</span></label>
+              <label class="opt"><input type="radio" name="q3" value="b"><span>The trigger is the final step; the action is what starts the flow</span></label>
+              <label class="opt"><input type="radio" name="q3" value="c"><span>Both are manual buttons a person clicks each time</span></label>
+              <label class="opt"><input type="radio" name="q3" value="d"><span>The trigger filters data; the action stores the user's password</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> Automation follows trigger → (filter/transform) → action: an event fires the flow (trigger) and the flow then performs operations (actions).</p>
+          </div>
+
+          <div class="q" data-answer="d">
+            <p class="qtext"><span class="qn">4.</span> What does a <code>webhook</code> do in a no-code checkout?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q4" value="a"><span>It stores the customer's card number in your database</span></label>
+              <label class="opt"><input type="radio" name="q4" value="b"><span>It is the visual editor where you design the payment form</span></label>
+              <label class="opt"><input type="radio" name="q4" value="c"><span>It encrypts your website's traffic end to end</span></label>
+              <label class="opt"><input type="radio" name="q4" value="d"><span>It is an automatic message the payment provider sends your app when an event happens, e.g. that a payment succeeded</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> A webhook is the provider's automatic "this happened" signal (e.g. <code>checkout.session.completed</code>) that lets your app react — marking the order paid and fulfilling it.</p>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p class="qtext"><span class="qn">5.</span> Why should card entry stay on the payment provider's <b>hosted page</b> rather than a custom form on your site?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q5" value="a"><span>It looks more professional, but makes no security difference</span></label>
+              <label class="opt"><input type="radio" name="q5" value="b"><span>So the sensitive card details never touch your site or database, keeping the PCI compliance burden with the provider</span></label>
+              <label class="opt"><input type="radio" name="q5" value="c"><span>Hosted pages are the only way to charge a card at all</span></label>
+              <label class="opt"><input type="radio" name="q5" value="d"><span>So you can store the raw card number for re-use later</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> Keeping entry on the provider's hosted page means raw card data never reaches your stack, so the compliance and liability burden stays with the provider — never store raw card numbers.</p>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p class="qtext"><span class="qn">6.</span> You are modelling a no-code database and need a field for an order's status (<i>pending</i>, <i>paid</i>, <i>shipped</i>). What field type best fits?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q6" value="a"><span>A free-text field so anyone can type anything</span></label>
+              <label class="opt"><input type="radio" name="q6" value="b"><span>A number field</span></label>
+              <label class="opt"><input type="radio" name="q6" value="c"><span>A single-select / option field restricted to the allowed values</span></label>
+              <label class="opt"><input type="radio" name="q6" value="d"><span>An attachment field</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> A fixed set of states fits a single-select/option field, which constrains input to valid values and keeps the data consistent — free text invites typos and messy data.</p>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p class="qtext"><span class="qn">7.</span> Which is the better-engineered <b>prompt</b> for a generative model?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q7" value="a"><span>One that states the goal, the audience, the format wanted, and where the model should let you verify its claims</span></label>
+              <label class="opt"><input type="radio" name="q7" value="b"><span>The shortest possible prompt, since minimum effort saves time</span></label>
+              <label class="opt"><input type="radio" name="q7" value="c"><span>A vague prompt, because constraints limit the model's creativity</span></label>
+              <label class="opt"><input type="radio" name="q7" value="d"><span>Any prompt — output quality does not depend on the prompt</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> A good prompt is specific about goal, audience and format; minimum-effort prompts give low-quality results, so refining the prompt is real work.</p>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p class="qtext"><span class="qn">8.</span> Under this course's critical-GenAI rule, how should you treat an LLM's confident answer with specific statistics and a cited study?</p>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q8" value="a"><span>Trust it — confident, detailed answers with citations are reliable</span></label>
+              <label class="opt"><input type="radio" name="q8" value="b"><span>Assume the output is wrong until verified — independently confirm each figure and that the cited source really says it before using it</span></label>
+              <label class="opt"><input type="radio" name="q8" value="c"><span>Use it without checking, but only if you acknowledge the AI</span></label>
+              <label class="opt"><input type="radio" name="q8" value="d"><span>Discard anything from an LLM, since GenAI is banned in the course</span></label>
+            </div>
+            <p class="explain"><b>Answer.</b> The policy says assume the output is wrong unless you know the answer or can cross-check it — confident figures and citations are exactly where models hallucinate, and you own any error that ships.</p>
+          </div>
+
+          <div class="quiz-actions">
+            <button type="button" class="qbtn check">Check answers</button>
+            <button type="button" class="qbtn reset">Reset</button>
+            <span class="score" hidden></span>
+          </div>
+        </form>
+        <script>
+          (function () {
+            var form = document.querySelector('#quiz .quiz');
+            if (!form) return;
+            var qs = form.querySelectorAll('.q');
+            var scoreEl = form.querySelector('.score');
+            form.querySelector('.check').addEventListener('click', function () {
+              var correct = 0;
+              qs.forEach(function (q) {
+                var ans = q.getAttribute('data-answer');
+                var chosen = q.querySelector('input:checked');
+                q.querySelectorAll('.opt').forEach(function (opt) {
+                  opt.classList.remove('correct', 'wrong');
+                  if (opt.querySelector('input').value === ans) opt.classList.add('correct');
+                  else if (chosen && opt.contains(chosen)) opt.classList.add('wrong');
+                });
+                if (chosen && chosen.value === ans) correct++;
+                var ex = q.querySelector('.explain');
+                if (ex) ex.classList.add('show');
+              });
+              scoreEl.textContent = 'Score: ' + correct + ' / ' + qs.length;
+              scoreEl.hidden = false;
+            });
+            form.querySelector('.reset').addEventListener('click', function () {
+              form.reset();
+              qs.forEach(function (q) {
+                q.querySelectorAll('.opt').forEach(function (o) { o.classList.remove('correct', 'wrong'); });
+                var ex = q.querySelector('.explain');
+                if (ex) ex.classList.remove('show');
+              });
+              scoreEl.hidden = true;
+            });
+          })();
+        </script>
       </section>
 
       <!-- KEY CONCEPTS GLOSSARY ----------------------------------------- -->
